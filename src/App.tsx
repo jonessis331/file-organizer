@@ -1,51 +1,47 @@
-import { useState } from "react";
-import reactLogo from "./assets/react.svg";
+import { useEffect, useState } from 'react';
 import { invoke } from "@tauri-apps/api/core";
-import "./App.css";
+import { open } from "@tauri-apps/plugin-dialog";
 
-function App() {
-  const [greetMsg, setGreetMsg] = useState("");
-  const [name, setName] = useState("");
+type FileMeta = {
+  name: string;
+  path: string;
+  file_type: string;
+  size: number;
+  created: string;
+  modified: string;
+};
 
-  async function greet() {
-    // Learn more about Tauri commands at https://tauri.app/develop/calling-rust/
-    setGreetMsg(await invoke("greet", { name }));
-  }
+export default function App() {
+  const [files, setFiles] = useState<FileMeta[]>([]);
+  const [folder, setFolder] = useState<string | null>(null);
+
+  const selectFolder = async () => {
+    const selected = await open({ directory: true });
+    if (typeof selected === "string") {
+      setFolder(selected);
+      const result = await invoke<FileMeta[]>("scan_directory", { path: selected });
+      setFiles(result);
+    }
+  };
 
   return (
-    <main className="container">
-      <h1>Welcome to Tauri + React</h1>
+    <div style={{ padding: 24 }}>
+      <h1>📁 File Organizer</h1>
+      <button onClick={selectFolder}>Select Folder</button>
+      {folder && <p>Selected: {folder}</p>}
 
-      <div className="row">
-        <a href="https://vitejs.dev" target="_blank">
-          <img src="/vite.svg" className="logo vite" alt="Vite logo" />
-        </a>
-        <a href="https://tauri.app" target="_blank">
-          <img src="/tauri.svg" className="logo tauri" alt="Tauri logo" />
-        </a>
-        <a href="https://reactjs.org" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <p>Click on the Tauri, Vite, and React logos to learn more.</p>
-
-      <form
-        className="row"
-        onSubmit={(e) => {
-          e.preventDefault();
-          greet();
-        }}
-      >
-        <input
-          id="greet-input"
-          onChange={(e) => setName(e.currentTarget.value)}
-          placeholder="Enter a name..."
-        />
-        <button type="submit">Greet</button>
-      </form>
-      <p>{greetMsg}</p>
-    </main>
+      {files.length > 0 && (
+        <>
+          <h2>Scanned Files</h2>
+          <ul>
+            {files.map((file, i) => (
+              <li key={i}>
+                <strong>{file.name}</strong> — {file.file_type} — {Math.round(file.size / 1024)} KB
+              </li>
+            ))}
+          </ul>
+        </>
+      )}
+    </div>
   );
 }
-
-export default App;
