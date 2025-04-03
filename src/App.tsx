@@ -16,13 +16,25 @@ export default function App() {
   const [folder, setFolder] = useState<string | null>(null);
 
   const selectFolder = async () => {
-    const selected = await open({ directory: true });
-    if (typeof selected === "string") {
-      setFolder(selected);
-      const result = await invoke<FileMeta[]>("scan_directory", { path: selected });
-      setFiles(result);
+    console.log("🟡 Button clicked: opening folder dialog...");
+  
+    try {
+      const selected = await open({ directory: true });
+      console.log("🟢 Folder selected:", selected);
+  
+      if (typeof selected === "string") {
+        setFolder(selected);
+        const result = await invoke<FileMeta[]>("scan_directory", { path: selected });
+        console.log("📁 Files returned:", result);
+        setFiles(result);
+      } else {
+        console.log("🟠 No folder selected or dialog was cancelled");
+      }
+    } catch (error) {
+      console.error("🔴 Error selecting folder:", error);
     }
   };
+  
 
   return (
     <div style={{ padding: 24 }}>
