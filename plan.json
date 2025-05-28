@@ -1,0 +1,197 @@
+{
+  "folders": [
+    "Career/Resumes",
+    "Career/Applications",
+    "Career/Presentations",
+    "Projects/FileOrganizerApp",
+    "Projects/Auction",
+    "Media/Photos",
+    "Code/Scripts",
+    "Code/Tests",
+    "System/GitConfig/fit",
+    "System/GitConfig/1lionauction",
+    "System/GitHooks/fit"
+  ],
+  "moves": [
+    {
+      "file": "Jonathan Essis_AI Trainer - COBOL Developer _20250408.pdf",
+      "relative_path": "Jonathan Essis_AI Trainer - COBOL Developer _20250408.pdf",
+      "new_path": "Career/Applications/Jonathan Essis_AI Trainer - COBOL Developer _20250408.pdf",
+      "reason": "Job application PDF for a developer role — dated and purpose-specific"
+    },
+    {
+      "file": "Resume Newest 5:12.pages",
+      "relative_path": "Resume Newest 5:12.pages",
+      "new_path": "Career/Resumes/Resume Newest 5:12.pages",
+      "reason": "Latest resume draft, dated mid-2024 — relevant for ongoing job search"
+    },
+    {
+      "file": "Jonathan_Essis_UCF_Developer_Presentation.pptx",
+      "relative_path": "Jonathan_Essis_UCF_Developer_Presentation.pptx",
+      "new_path": "Career/Presentations/Jonathan_Essis_UCF_Developer_Presentation.pptx",
+      "reason": "Presentation for a UCF Developer opportunity — used in professional context"
+    },
+    {
+      "file": "readme.txt",
+      "relative_path": "readme.txt",
+      "new_path": "Projects/FileOrganizerApp/readme.txt",
+      "reason": "README for a file organizer app project — described within the file itself"
+    },
+    {
+      "file": "photo.jpg",
+      "relative_path": "Images/photo.jpg",
+      "new_path": "Media/Photos/photo.jpg",
+      "reason": "JPEG image likely personal — stored in an 'Images' folder, filename is generic"
+    },
+    {
+      "file": "code.sh",
+      "relative_path": "Projects/code.sh",
+      "new_path": "Code/Scripts/code.sh",
+      "reason": "Shell script with a test command — minimal utility script"
+    },
+    {
+      "file": "test.txt",
+      "relative_path": "Docs/test.txt",
+      "new_path": "Code/Tests/test.txt",
+      "reason": "Small test file containing sample text — useful for testing input/output"
+    },
+    {
+      "file": "LionAuctionV2 2.zip",
+      "relative_path": "Github/LionAuctionV2 2.zip",
+      "new_path": "Projects/Auction/LionAuctionV2 2.zip",
+      "reason": "Archive of a previous auction project — grouped into project folder"
+    },
+    {
+      "file": "config",
+      "relative_path": "Github/fit/.git/config",
+      "new_path": "System/GitConfig/fit/config",
+      "reason": "Git configuration file for the 'fit' project — essential version control file"
+    },
+    {
+      "file": "HEAD",
+      "relative_path": "Github/fit/.git/HEAD",
+      "new_path": "System/GitConfig/fit/HEAD",
+      "reason": "Pointer to current branch in Git — core part of Git repo metadata"
+    },
+    {
+      "file": "description",
+      "relative_path": "Github/fit/.git/description",
+      "new_path": "System/GitConfig/fit/description",
+      "reason": "Description of the Git repository — part of project configuration"
+    },
+    {
+      "file": "exclude",
+      "relative_path": "Github/fit/.git/info/exclude",
+      "new_path": "System/GitConfig/fit/exclude",
+      "reason": "Git exclude list — functions like .gitignore"
+    },
+    {
+      "file": "commit-msg.sample",
+      "relative_path": "Github/fit/.git/hooks/commit-msg.sample",
+      "new_path": "System/GitHooks/fit/commit-msg.sample",
+      "reason": "Sample Git hook for validating commit messages — developer tool"
+    },
+    {
+      "file": "pre-rebase.sample",
+      "relative_path": "Github/fit/.git/hooks/pre-rebase.sample",
+      "new_path": "System/GitHooks/fit/pre-rebase.sample",
+      "reason": "Git hook for rebasing safety — sample"
+    },
+    {
+      "file": "pre-commit.sample",
+      "relative_path": "Github/fit/.git/hooks/pre-commit.sample",
+      "new_path": "System/GitHooks/fit/pre-commit.sample",
+      "reason": "Git hook for pre-commit checks — sample file"
+    },
+    {
+      "file": "applypatch-msg.sample",
+      "relative_path": "Github/fit/.git/hooks/applypatch-msg.sample",
+      "new_path": "System/GitHooks/fit/applypatch-msg.sample",
+      "reason": "Git hook for validating patch application — sample"
+    },
+    {
+      "file": "fsmonitor-watchman.sample",
+      "relative_path": "Github/fit/.git/hooks/fsmonitor-watchman.sample",
+      "new_path": "System/GitHooks/fit/fsmonitor-watchman.sample",
+      "reason": "Sample Git hook for fsmonitor — optional performance utility"
+    },
+    {
+      "file": "pre-receive.sample",
+      "relative_path": "Github/fit/.git/hooks/pre-receive.sample",
+      "new_path": "System/GitHooks/fit/pre-receive.sample",
+      "reason": "Git hook for validating pushes on remote — sample"
+    },
+    {
+      "file": "prepare-commit-msg.sample",
+      "relative_path": "Github/fit/.git/hooks/prepare-commit-msg.sample",
+      "new_path": "System/GitHooks/fit/prepare-commit-msg.sample",
+      "reason": "Git hook for editing commit messages — sample"
+    },
+    {
+      "file": "post-update.sample",
+      "relative_path": "Github/fit/.git/hooks/post-update.sample",
+      "new_path": "System/GitHooks/fit/post-update.sample",
+      "reason": "Sample Git hook — used after updates on remote"
+    },
+    {
+      "file": "pre-merge-commit.sample",
+      "relative_path": "Github/fit/.git/hooks/pre-merge-commit.sample",
+      "new_path": "System/GitHooks/fit/pre-merge-commit.sample",
+      "reason": "Sample Git hook — pre-merge validation"
+    },
+    {
+      "file": "pre-applypatch.sample",
+      "relative_path": "Github/fit/.git/hooks/pre-applypatch.sample",
+      "new_path": "System/GitHooks/fit/pre-applypatch.sample",
+      "reason": "Sample Git hook for patch staging"
+    },
+    {
+      "file": "pre-push.sample",
+      "relative_path": "Github/fit/.git/hooks/pre-push.sample",
+      "new_path": "System/GitHooks/fit/pre-push.sample",
+      "reason": "Sample Git hook for push validation"
+    },
+    {
+      "file": "update.sample",
+      "relative_path": "Github/fit/.git/hooks/update.sample",
+      "new_path": "System/GitHooks/fit/update.sample",
+      "reason": "Sample Git hook for update workflow"
+    },
+    {
+      "file": "push-to-checkout.sample",
+      "relative_path": "Github/fit/.git/hooks/push-to-checkout.sample",
+      "new_path": "System/GitHooks/fit/push-to-checkout.sample",
+      "reason": "Sample Git hook — automation upon checkout"
+    },
+    {
+      "file": "config",
+      "relative_path": "Github/1lionauction/.git/config",
+      "new_path": "System/GitConfig/1lionauction/config",
+      "reason": "Git configuration file — auction-related project"
+    },
+    {
+      "file": "HEAD",
+      "relative_path": "Github/1lionauction/.git/HEAD",
+      "new_path": "System/GitConfig/1lionauction/HEAD",
+      "reason": "Git HEAD pointer for auction project"
+    },
+    {
+      "file": "description",
+      "relative_path": "Github/1lionauction/.git/description",
+      "new_path": "System/GitConfig/1lionauction/description",
+      "reason": "Descriptive metadata for auction Git repo"
+    },
+    {
+      "file": "index",
+      "relative_path": "Github/1lionauction/.git/index",
+      "new_path": "System/GitConfig/1lionauction/index",
+      "reason": "Git staging area index file for auction repo"
+    },
+    {
+      "file": "COMMIT_EDITMSG",
+      "relative_path": "Github/1lionauction/.git/COMMIT_EDITMSG",
+      "new_path": "System/GitConfig/1lionauction/COMMIT_EDITMSG",
+      "reason": "Temporary file used for editing Git commit messages"
+    }
+  ]
+}

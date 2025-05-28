@@ -1,0 +1,235 @@
+You are a file organization assistant.
+
+    Given the following files, suggest:
+    1. A smart folder structure (e.g., 'Work/Finance', 'Photos', 'School/Assignments')
+    2. A new folder path for each file, relative to the root scanned directory
+    3. A short reason for each move
+
+    Use content, timestamps, and naming to group meaningfully. Your output should be JSON like:
+
+    {
+    "folders": [ ... ],
+    "moves": [
+        {
+        "file": "original_filename.ext",
+        "relative_path": "original/relative/path.ext",
+        "new_path": "SmartFolder/new_filename.ext",
+        "reason": "why it belongs here"
+        },
+        ...
+    ]
+    }
+
+    Files metadata:
+    - **Name**: Jonathan Essis_AI Trainer - COBOL Developer _20250408.pdf
+  - **Relative Path**: Jonathan Essis_AI Trainer - COBOL Developer _20250408.pdf
+  - **Extension**: .pdf
+  - **Size**: 7.91 KB
+  - **Created**: 2025-04-08T20:17:14.440000
+  - **Modified**: 2025-04-08T20:17:14.440000
+  - **Content Snippet**: Jonathan Essis +1-717-329-8399 jonathanessis94@gmail.com github.com/jonessis331 Summary Fullstack Engineer experienced in developing scalable AI and mobile solutions. Demonstrated abilities in solving
+- **Name**: Resume Newest 5:12.pages
+  - **Relative Path**: Resume Newest 5:12.pages
+  - **Extension**: .pages
+  - **Size**: 949.03 KB
+  - **Created**: 2024-06-06T16:55:00
+  - **Modified**: 2024-06-06T16:55:00
+  - **Content Snippet**: File: Resume Newest 5:12.pages (type: .pages)
+- **Name**: Jonathan_Essis_UCF_Developer_Presentation.pptx
+  - **Relative Path**: Jonathan_Essis_UCF_Developer_Presentation.pptx
+  - **Extension**: .pptx
+  - **Size**: 34.68 KB
+  - **Created**: 2025-04-29T21:12:16.280000
+  - **Modified**: 2025-04-29T21:12:16.280000
+  - **Content Snippet**: File: Jonathan_Essis_UCF_Developer_Presentation.pptx (type: .pptx)
+- **Name**: readme.txt
+  - **Relative Path**: readme.txt
+  - **Extension**: .txt
+  - **Size**: 2.61 KB
+  - **Created**: 2025-04-03T19:44:21.180000
+  - **Modified**: 2025-04-03T19:44:21.180000
+  - **Content Snippet**: # 🗂️ File Organizer (Electron + Python)  An intelligent, cross-platform desktop app that scans, understands, and reorganizes your computer files based on context and user preferences. Built with Elect
+- **Name**: photo.jpg
+  - **Relative Path**: Images/photo.jpg
+  - **Extension**: .jpg
+  - **Size**: 0.0 KB
+  - **Created**: 2025-04-04T01:01:41.850000
+  - **Modified**: 2025-04-04T01:01:41.850000
+  - **Content Snippet**: Image file, filename suggests: photo
+- **Name**: code.sh
+  - **Relative Path**: Projects/code.sh
+  - **Extension**: .sh
+  - **Size**: 0.01 KB
+  - **Created**: 2025-04-04T01:01:41.850000
+  - **Modified**: 2025-04-04T01:01:41.850000
+  - **Content Snippet**: echo hello
+- **Name**: test.txt
+  - **Relative Path**: Docs/test.txt
+  - **Extension**: .txt
+  - **Size**: 0.01 KB
+  - **Created**: 2025-04-04T01:01:41.030000
+  - **Modified**: 2025-04-04T01:01:41.030000
+  - **Content Snippet**: sample text
+- **Name**: LionAuctionV2 2.zip
+  - **Relative Path**: Github/LionAuctionV2 2.zip
+  - **Extension**: .zip
+  - **Size**: 5934.95 KB
+  - **Created**: 2023-04-24T23:32:37
+  - **Modified**: 2023-04-24T23:32:37
+  - **Content Snippet**: Compressed archive — likely a bundle of multiple files
+- **Name**: config
+  - **Relative Path**: Github/fit/.git/config
+  - **Extension**: 
+  - **Size**: 0.3 KB
+  - **Created**: 2025-05-28T11:08:45.360000
+  - **Modified**: 2025-05-28T11:08:45.360000
+  - **Content Snippet**: No extension, possibly a system file — name: config
+- **Name**: HEAD
+  - **Relative Path**: Github/fit/.git/HEAD
+  - **Extension**: 
+  - **Size**: 0.02 KB
+  - **Created**: 2025-05-28T11:08:45.370000
+  - **Modified**: 2025-05-28T11:08:45.370000
+  - **Content Snippet**: No extension, possibly a system file — name: HEAD
+- **Name**: description
+  - **Relative Path**: Github/fit/.git/description
+  - **Extension**: 
+  - **Size**: 0.07 KB
+  - **Created**: 2025-05-28T11:08:45.390000
+  - **Modified**: 2025-05-28T11:08:45.390000
+  - **Content Snippet**: No extension, possibly a system file — name: description
+- **Name**: exclude
+  - **Relative Path**: Github/fit/.git/info/exclude
+  - **Extension**: 
+  - **Size**: 0.23 KB
+  - **Created**: 2025-05-28T11:08:45.380000
+  - **Modified**: 2025-05-28T11:08:45.380000
+  - **Content Snippet**: No extension, possibly a system file — name: exclude
+- **Name**: commit-msg.sample
+  - **Relative Path**: Github/fit/.git/hooks/commit-msg.sample
+  - **Extension**: .sample
+  - **Size**: 0.88 KB
+  - **Created**: 2025-05-28T11:08:45.390000
+  - **Modified**: 2025-05-28T11:08:45.390000
+  - **Content Snippet**: File: commit-msg.sample (type: .sample)
+- **Name**: pre-rebase.sample
+  - **Relative Path**: Github/fit/.git/hooks/pre-rebase.sample
+  - **Extension**: .sample
+  - **Size**: 4.78 KB
+  - **Created**: 2025-05-28T11:08:45.390000
+  - **Modified**: 2025-05-28T11:08:45.390000
+  - **Content Snippet**: File: pre-rebase.sample (type: .sample)
+- **Name**: pre-commit.sample
+  - **Relative Path**: Github/fit/.git/hooks/pre-commit.sample
+  - **Extension**: .sample
+  - **Size**: 1.6 KB
+  - **Created**: 2025-05-28T11:08:45.400000
+  - **Modified**: 2025-05-28T11:08:45.400000
+  - **Content Snippet**: File: pre-commit.sample (type: .sample)
+- **Name**: applypatch-msg.sample
+  - **Relative Path**: Github/fit/.git/hooks/applypatch-msg.sample
+  - **Extension**: .sample
+  - **Size**: 0.47 KB
+  - **Created**: 2025-05-28T11:08:45.400000
+  - **Modified**: 2025-05-28T11:08:45.400000
+  - **Content Snippet**: File: applypatch-msg.sample (type: .sample)
+- **Name**: fsmonitor-watchman.sample
+  - **Relative Path**: Github/fit/.git/hooks/fsmonitor-watchman.sample
+  - **Extension**: .sample
+  - **Size**: 4.62 KB
+  - **Created**: 2025-05-28T11:08:45.400000
+  - **Modified**: 2025-05-28T11:08:45.400000
+  - **Content Snippet**: File: fsmonitor-watchman.sample (type: .sample)
+- **Name**: pre-receive.sample
+  - **Relative Path**: Github/fit/.git/hooks/pre-receive.sample
+  - **Extension**: .sample
+  - **Size**: 0.53 KB
+  - **Created**: 2025-05-28T11:08:45.400000
+  - **Modified**: 2025-05-28T11:08:45.400000
+  - **Content Snippet**: File: pre-receive.sample (type: .sample)
+- **Name**: prepare-commit-msg.sample
+  - **Relative Path**: Github/fit/.git/hooks/prepare-commit-msg.sample
+  - **Extension**: .sample
+  - **Size**: 1.46 KB
+  - **Created**: 2025-05-28T11:08:45.410000
+  - **Modified**: 2025-05-28T11:08:45.410000
+  - **Content Snippet**: File: prepare-commit-msg.sample (type: .sample)
+- **Name**: post-update.sample
+  - **Relative Path**: Github/fit/.git/hooks/post-update.sample
+  - **Extension**: .sample
+  - **Size**: 0.18 KB
+  - **Created**: 2025-05-28T11:08:45.410000
+  - **Modified**: 2025-05-28T11:08:45.410000
+  - **Content Snippet**: File: post-update.sample (type: .sample)
+- **Name**: pre-merge-commit.sample
+  - **Relative Path**: Github/fit/.git/hooks/pre-merge-commit.sample
+  - **Extension**: .sample
+  - **Size**: 0.41 KB
+  - **Created**: 2025-05-28T11:08:45.420000
+  - **Modified**: 2025-05-28T11:08:45.420000
+  - **Content Snippet**: File: pre-merge-commit.sample (type: .sample)
+- **Name**: pre-applypatch.sample
+  - **Relative Path**: Github/fit/.git/hooks/pre-applypatch.sample
+  - **Extension**: .sample
+  - **Size**: 0.41 KB
+  - **Created**: 2025-05-28T11:08:45.420000
+  - **Modified**: 2025-05-28T11:08:45.420000
+  - **Content Snippet**: File: pre-applypatch.sample (type: .sample)
+- **Name**: pre-push.sample
+  - **Relative Path**: Github/fit/.git/hooks/pre-push.sample
+  - **Extension**: .sample
+  - **Size**: 1.34 KB
+  - **Created**: 2025-05-28T11:08:45.430000
+  - **Modified**: 2025-05-28T11:08:45.430000
+  - **Content Snippet**: File: pre-push.sample (type: .sample)
+- **Name**: update.sample
+  - **Relative Path**: Github/fit/.git/hooks/update.sample
+  - **Extension**: .sample
+  - **Size**: 3.56 KB
+  - **Created**: 2025-05-28T11:08:45.440000
+  - **Modified**: 2025-05-28T11:08:45.440000
+  - **Content Snippet**: File: update.sample (type: .sample)
+- **Name**: push-to-checkout.sample
+  - **Relative Path**: Github/fit/.git/hooks/push-to-checkout.sample
+  - **Extension**: .sample
+  - **Size**: 2.72 KB
+  - **Created**: 2025-05-28T11:08:45.460000
+  - **Modified**: 2025-05-28T11:08:45.460000
+  - **Content Snippet**: File: push-to-checkout.sample (type: .sample)
+- **Name**: config
+  - **Relative Path**: Github/1lionauction/.git/config
+  - **Extension**: 
+  - **Size**: 0.13 KB
+  - **Created**: 2025-05-28T11:08:45.470000
+  - **Modified**: 2025-05-28T11:08:45.470000
+  - **Content Snippet**: No extension, possibly a system file — name: config
+- **Name**: HEAD
+  - **Relative Path**: Github/1lionauction/.git/HEAD
+  - **Extension**: 
+  - **Size**: 0.02 KB
+  - **Created**: 2025-05-28T11:08:45.790000
+  - **Modified**: 2025-05-28T11:08:45.790000
+  - **Content Snippet**: No extension, possibly a system file — name: HEAD
+- **Name**: description
+  - **Relative Path**: Github/1lionauction/.git/description
+  - **Extension**: 
+  - **Size**: 0.07 KB
+  - **Created**: 2025-05-28T11:08:45.800000
+  - **Modified**: 2025-05-28T11:08:45.800000
+  - **Content Snippet**: No extension, possibly a system file — name: description
+- **Name**: index
+  - **Relative Path**: Github/1lionauction/.git/index
+  - **Extension**: 
+  - **Size**: 2.51 KB
+  - **Created**: 2025-05-28T11:08:45.840000
+  - **Modified**: 2025-05-28T11:08:45.840000
+  - **Content Snippet**: No extension, possibly a system file — name: index
+- **Name**: COMMIT_EDITMSG
+  - **Relative Path**: Github/1lionauction/.git/COMMIT_EDITMSG
+  - **Extension**: 
+  - **Size**: 0.02 KB
+  - **Created**: 2025-05-28T11:08:45.850000
+  - **Modified**: 2025-05-28T11:08:45.850000
+  - **Content Snippet**: No extension, possibly a system file — name: COMMIT_EDITMSG
+
+    Your response:
