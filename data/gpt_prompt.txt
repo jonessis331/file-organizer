@@ -1,0 +1,85 @@
+You are an expert file organization assistant using the KonMari Method principles.
+
+    **Current Situation:**
+    - Root directory has 6 files needing organization
+    - Found 19 already well-organized folders to preserve
+    - Most common file types: (2004), .csv(28), .html(22), .py(21), .txt(9)
+
+    **Organization Principles:**
+    1. **Joy & Purpose**: Group files by their purpose and usage intent
+    2. **Categories over Location**: Create clear category folders (Work, Personal, Archive, etc.)
+    3. **Consolidation**: Merge similar/duplicate content intelligently
+    4. **Preservation**: Keep these organized folders intact: Github, Github/fit, Github/1lionauction, Github/concurrency, Github/LionAuctionV2 2
+    5. **Clarity**: Use clear, descriptive folder names that "spark joy"
+
+    **Your Task:**
+    Create a reorganization plan that:
+    - Groups files into intuitive categories based on content and purpose
+    - Preserves existing well-organized project folders
+    - Creates a clean, navigable structure
+    - Provides clear reasoning for each move
+
+    **Output Format (JSON):**
+    {
+        "folders": [
+            "Work/Documents",
+            "Work/Projects/Active",
+            "Personal/Photos/2024",
+            "Archive/Old_Projects",
+            "Resources/Templates",
+            // ... more folders
+        ],
+        "moves": [
+            {
+                "file": "filename.ext",
+                "relative_path": "current/path/filename.ext",
+                "new_path": "Work/Documents/filename.ext",
+                "reason": "Work-related document based on content about project planning"
+            },
+            // ... more moves
+        ],
+        "preserve": [
+            // Folders that should not be reorganized
+        ]
+    }
+
+    **Files to Organize:**
+    - **Jonathan Essis_AI Trainer - COBOL Developer _20250408.pdf**
+        Path: Jonathan Essis_AI Trainer - COBOL Developer _20250408.pdf
+        Type: .pdf | Size: 7.91KB
+        Modified: 2025-04-08
+        Content: Jonathan Essis +1-717-329-8399 jonathanessis94@gmail.com github.com/jonessis331 Summary Fullstack...
+- **Resume Newest 5:12.pages**
+        Path: Resume Newest 5:12.pages
+        Type: .pages | Size: 949.03KB
+        Modified: 2024-06-06
+        Content: [PAGES file: Resume Newest 5:12.pages]
+- **Jonathan_Essis_UCF_Developer_Presentation.pptx**
+        Path: Jonathan_Essis_UCF_Developer_Presentation.pptx
+        Type: .pptx | Size: 34.68KB
+        Modified: 2025-04-29
+        Content: [PPTX file: Jonathan_Essis_UCF_Developer_Presentation.pptx]
+- **readme.txt**
+        Path: readme.txt
+        Type: .txt | Size: 2.61KB
+        Modified: 2025-04-03
+        Content: # 🗂️ File Organizer (Electron + Python) An intelligent, cross-platform desktop app that scans, un...
+- **code.sh**
+        Path: Projects/code.sh
+        Type: .sh | Size: 0.01KB
+        Modified: 2025-04-04
+        Content: echo hello
+- **test.txt**
+        Path: Docs/test.txt
+        Type: .txt | Size: 0.01KB
+        Modified: 2025-04-04
+        Content: sample text
+
+    **Important Notes:**
+    - For Git repositories (.git folders), keep the parent project folder intact
+    - Group related files even if they're in different locations
+    - Use dates in folder names when relevant (e.g., "Photos/2024-05-Hawaii")
+    - Create an "Archive" folder for old/inactive items
+    - Suggest "Review" folder for items needing user decision
+
+    Generate the complete reorganization plan:

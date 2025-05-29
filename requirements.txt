@@ -1,0 +1,16 @@
+# Core dependencies
+tqdm>=4.65.0          # Progress bars
+python-docx>=0.8.11   # Word document support
+PyMuPDF>=1.23.0      # PDF support (fitz)
+openai>=1.0.0        # OpenAI API (optional)
+
+# Development dependencies (optional)
+pytest>=7.4.0        # Testing
+black>=23.0.0        # Code formatting
+flake8>=6.0.0        # Linting
+mypy>=1.0.0         # Type checking
+
+# Additional utilities (optional)
+colorama>=0.4.6     # Cross-platform colored output
+python-magic>=0.4.27 # Better file type detection
+pillow>=10.0.0      # Image processing capabilities
