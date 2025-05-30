@@ -1,60 +1,19 @@
 {
-  "timestamp": "2025-05-29T11:15:11.304767",
-  "root_path": "/Volumes/T7/fileorganizertestjosh",
+  "timestamp": "2025-05-29T12:06:06.570253",
+  "root_path": "/var/folders/tg/0fxh5jpn6q9_glsp4n32n8j00000gn/T/tmp18rjt0h9",
   "original_state": [
     {
-      "original_path": "Jonathan Essis_AI Trainer - COBOL Developer _20250408.pdf",
-      "new_path": "Career/Applications/Jonathan Essis_AI Trainer - COBOL Developer _20250408.pdf",
-      "file_hash": "8f7f0c9c1c527180e1b83a3bed2d2f8638a7255c3bf4fad7002ef122f04496d0",
-      "size": 8101,
-      "modified": 1744157834.44
-    },
-    {
-      "original_path": "Resume Newest 5:12.pages",
-      "new_path": "Career/Resumes/Resume Newest 5:12.pages",
-      "file_hash": "e564cb1f1f072be1d56512fcb648368a9e3610573df1645bc6cf6aa79f82736a",
-      "size": 971807,
-      "modified": 1717707300.0
-    },
-    {
-      "original_path": "Jonathan_Essis_UCF_Developer_Presentation.pptx",
-      "new_path": "Career/Presentations/Jonathan_Essis_UCF_Developer_Presentation.pptx",
-      "file_hash": "a54bc83405e28743e9d3dae28f13dff460df905da09d652945db1d6b72248faf",
-      "size": 35509,
-      "modified": 1745975536.27
-    },
-    {
-      "original_path": "readme.txt",
-      "new_path": "Projects/FileOrganizerApp/readme.txt",
-      "file_hash": "00a53f210d215b2fedff856764624b5fa48537ef0de65bc2f3093c6f32191a5d",
-      "size": 2674,
-      "modified": 1743723861.17
-    },
-    {
-      "original_path": "Projects/code.sh",
-      "new_path": "Code/Scripts/code.sh",
-      "file_hash": "5dbad7dd0b9b122dcd9956884390f4aac4738caba8ff53498a7ab6718b176c30",
-      "size": 11,
-      "modified": 1743742901.85
-    },
-    {
-      "original_path": "Docs/test.txt",
-      "new_path": "Code/Tests/test.txt",
-      "file_hash": "6693268dc33b835212e15f14700e65edc5d65d448bd3409a4357a5b8b4f2be43",
-      "size": 12,
-      "modified": 1743742901.02
+      "original_path": "test.txt",
+      "new_path": "TestFolder/test.txt",
+      "file_hash": "36827a4111958379fb9eb9582ba9452a15c744af34699ad98ea313ac10a09dca",
+      "size": 23,
+      "modified": 1748534766.5701265
     }
   ],
   "plan_summary": {
-    "total_moves": 6,
+    "total_moves": 1,
     "folders_created": [
-      "Career/Resumes",
-      "Career/Applications",
-      "Career/Presentations",
-      "Projects/FileOrganizerApp",
-      "Code/Scripts",
-      "Code/Tests",
-      "Review/To_Sort"
+      "TestFolder"
     ]
   }
 }

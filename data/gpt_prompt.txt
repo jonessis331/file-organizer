@@ -1,1 +1,90 @@
-Test prompt content
+You are an expert file organization assistant using the KonMari Method principles.
+
+    **Current Situation:**
+    - Root directory has 7 files needing organization
+    - Found 0 already well-organized folders to preserve
+    - Most common file types: .pdf(3), .doc(1), .html(1), .py(1), .txt(1)
+
+    **Organization Principles:**
+    1. **Joy & Purpose**: Group files by their purpose and usage intent
+    2. **Categories over Location**: Create clear category folders (Work, Personal, Archive, etc.)
+    3. **Consolidation**: Merge similar/duplicate content intelligently
+    4. **Preservation**: Keep these organized folders intact: 
+    5. **Clarity**: Use clear, descriptive folder names that "spark joy"
+
+    **Your Task:**
+    Create a reorganization plan that:
+    - Groups files into intuitive categories based on content and purpose
+    - Preserves existing well-organized project folders
+    - Creates a clean, navigable structure
+    - Provides clear reasoning for each move
+
+    **Output Format (JSON):**
+    {
+        "folders": [
+            "Work/Documents",
+            "Work/Projects/Active",
+            "Personal/Photos/2024",
+            "Archive/Old_Projects",
+            "Resources/Templates",
+            // ... more folders
+        ],
+        "moves": [
+            {
+                "file": "filename.ext",
+                "relative_path": "current/path/filename.ext",
+                "new_path": "Work/Documents/filename.ext",
+                "reason": "Work-related document based on content about project planning"
+            },
+            // ... more moves
+        ],
+        "preserve": [
+            // Folders that should not be reorganized
+        ]
+    }
+
+    **Files to Organize:**
+    - **report_2020.doc**
+        Path: Archive/Old_Reports/report_2020.doc
+        Type: .doc | Size: 0.01KB
+        Modified: 2025-05-29
+        Content: [Error reading: File is not a zip file]
+- **index.html**
+        Path: code/Web/index.html
+        Type: .html | Size: 0.03KB
+        Modified: 2025-05-29
+        Content: <html><body>Test</body></html>
+- **script.py**
+        Path: code/Scripts/script.py
+        Type: .py | Size: 0.02KB
+        Modified: 2025-05-29
+        Content: import os print('Hello')
+- **manual.pdf**
+        Path: Review/Unreadable_Files/manual.pdf
+        Type: .pdf | Size: 0.01KB
+        Modified: 2025-05-29
+        Content: [Error reading: Failed to open file '/Users/jonathanessis/file-org]
+- **project_notes.txt**
+        Path: Work/Projects/Active/project_notes.txt
+        Type: .txt | Size: 0.02KB
+        Modified: 2025-05-29
+        Content: Project planning notes
+- **invoice_january.pdf**
+        Path: Work/Finance/invoice_january.pdf
+        Type: .pdf | Size: 0.01KB
+        Modified: 2025-05-29
+        Content: [Error reading: Failed to open file '/Users/jonathanessis/file-org]
+- **resume_2024.pdf**
+        Path: Work/Documents/resume_2024.pdf
+        Type: .pdf | Size: 0.01KB
+        Modified: 2025-05-29
+        Content: [Error reading: Failed to open file '/Users/jonathanessis/file-org]
+
+    **Important Notes:**
+    - For Git repositories (.git folders), keep the parent project folder intact
+    - Group related files even if they're in different locations
+    - Use dates in folder names when relevant (e.g., "Photos/2024-05-Hawaii")
+    - Create an "Archive" folder for old/inactive items
+    - Suggest "Review" folder for items needing user decision
+
+    Generate the complete reorganization plan:
