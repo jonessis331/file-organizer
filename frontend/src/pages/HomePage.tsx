@@ -1,153 +1,252 @@
-import axios, { AxiosInstance } from "axios";
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import {
+  Box,
+  Container,
+  Typography,
+  Grid,
+  Card,
+  CardContent,
+  Button,
+  Paper,
+  Chip,
+  LinearProgress,
+  IconButton,
+  alpha,
+  useTheme,
+} from "@mui/material";
+import {
+  FolderOpen,
+  Scanner,
+  AutoAwesome,
+  TrendingUp,
+  AccessTime,
+  CheckCircle,
+  Warning,
+  ArrowForward,
+} from "@mui/icons-material";
 
-const API_BASE_URL = "http://localhost:8765/api";
-
-export interface ScanRequest {
-  path: string;
-  maxFiles?: number;
+interface HomePageProps {
+  apiConnected: boolean;
 }
 
-export interface TaskResponse {
-  task_id: string;
-  status: string;
-  message: string;
-}
+const HomePage: React.FC<HomePageProps> = ({ apiConnected }) => {
+  const navigate = useNavigate();
+  const theme = useTheme();
+  const [stats, setStats] = useState({
+    filesOrganized: 0,
+    foldersCreated: 0,
+    lastScan: null as string | null,
+  });
 
-export interface TaskStatus {
-  task_id: string;
-  status: "pending" | "running" | "completed" | "failed";
-  progress: number;
-  message: string;
-  result?: any;
-  error?: string;
-}
-
-export interface ScanResult {
-  total_files: number;
-  organized_folders: number;
-  file_types: Record<string, number>;
-}
-
-export interface OrganizationPlan {
-  folders: string[];
-  moves: Array<{
-    file: string;
-    relative_path: string;
-    new_path: string;
-    reason: string;
-  }>;
-}
-
-class ApiService {
-  private client: AxiosInstance;
-
-  constructor() {
-    this.client = axios.create({
-      baseURL: API_BASE_URL,
-      timeout: 30000,
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-  }
-
-  // Health check
-  async checkHealth(): Promise<boolean> {
-    try {
-      const response = await this.client.get("/");
-      return response.status === 200;
-    } catch {
-      return false;
+  useEffect(() => {
+    // Load stats from localStorage
+    const savedStats = localStorage.getItem("organizerStats");
+    if (savedStats) {
+      setStats(JSON.parse(savedStats));
     }
-  }
+  }, []);
 
-  // Scanning
-  async startScan(request: ScanRequest): Promise<TaskResponse> {
-    const response = await this.client.post<TaskResponse>("/scan", request);
-    return response.data;
-  }
+  const features = [
+    {
+      icon: <Scanner fontSize="large" />,
+      title: "Smart Scanning",
+      description: "AI-powered analysis of your file structure",
+      color: theme.palette.primary.main,
+      path: "/scan",
+    },
+    {
+      icon: <AutoAwesome fontSize="large" />,
+      title: "Auto Organization",
+      description: "Intelligent categorization using KonMari principles",
+      color: theme.palette.secondary.main,
+      path: "/organize",
+    },
+    {
+      icon: <TrendingUp fontSize="large" />,
+      title: "Progress Tracking",
+      description: "Real-time updates and detailed analytics",
+      color: theme.palette.success.main,
+      path: "/scan",
+    },
+  ];
 
-  async getScanResults(taskId: string): Promise<any> {
-    const response = await this.client.get(`/scan/${taskId}/results`);
-    return response.data;
-  }
+  return (
+    <Container maxWidth="lg">
+      {/* Hero Section */}
+      <Box sx={{ mb: 6, mt: 4 }}>
+        <Typography
+          variant="h2"
+          component="h1"
+          gutterBottom
+          sx={{
+            fontWeight: 700,
+            background: `linear-gradient(135deg, ${theme.palette.primary.main} 0%, ${theme.palette.secondary.main} 100%)`,
+            backgroundClip: "text",
+            WebkitBackgroundClip: "text",
+            WebkitTextFillColor: "transparent",
+          }}
+        >
+          File Organizer
+        </Typography>
+        <Typography variant="h5" color="text.secondary" sx={{ mb: 4 }}>
+          Transform your digital chaos into organized bliss
+        </Typography>
 
-  // Task management
-  async getTaskStatus(taskId: string): Promise<TaskStatus> {
-    const response = await this.client.get<TaskStatus>(`/task/${taskId}`);
-    return response.data;
-  }
+        {/* Status Alert */}
+        <Paper
+          sx={{
+            p: 2,
+            mb: 4,
+            backgroundColor: apiConnected
+              ? alpha(theme.palette.success.main, 0.1)
+              : alpha(theme.palette.error.main, 0.1),
+            border: `1px solid ${
+              apiConnected
+                ? theme.palette.success.main
+                : theme.palette.error.main
+            }`,
+          }}
+        >
+          <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
+            {apiConnected ? (
+              <CheckCircle color="success" />
+            ) : (
+              <Warning color="error" />
+            )}
+            <Typography variant="body1">
+              {apiConnected
+                ? "Backend API is connected and ready"
+                : "Backend API is not running. Please start it with: python backend/api/main.py"}
+            </Typography>
+          </Box>
+        </Paper>
 
-  async listTasks(): Promise<any> {
-    const response = await this.client.get("/tasks");
-    return response.data;
-  }
+        {/* Quick Start */}
+        <Card
+          sx={{
+            background: `linear-gradient(135deg, ${alpha(
+              theme.palette.primary.main,
+              0.1
+            )} 0%, ${alpha(theme.palette.secondary.main, 0.1)} 100%)`,
+            border: `1px solid ${alpha(theme.palette.primary.main, 0.2)}`,
+            mb: 4,
+          }}
+        >
+          <CardContent sx={{ p: 4 }}>
+            <Typography variant="h4" gutterBottom fontWeight={600}>
+              Quick Start
+            </Typography>
+            <Typography variant="body1" color="text.secondary" sx={{ mb: 3 }}>
+              Select a folder and let AI organize your files automatically
+            </Typography>
+            <Button
+              variant="contained"
+              size="large"
+              startIcon={<FolderOpen />}
+              endIcon={<ArrowForward />}
+              onClick={() => navigate("/scan")}
+              disabled={!apiConnected}
+              sx={{
+                background: `linear-gradient(135deg, ${theme.palette.primary.main} 0%, ${theme.palette.secondary.main} 100%)`,
+                "&:hover": {
+                  background: `linear-gradient(135deg, ${theme.palette.primary.dark} 0%, ${theme.palette.secondary.dark} 100%)`,
+                },
+              }}
+            >
+              Choose Folder to Organize
+            </Button>
+          </CardContent>
+        </Card>
 
-  // Prompt generation
-  async generatePrompt(path: string): Promise<TaskResponse> {
-    const response = await this.client.post<TaskResponse>("/prompt", {
-      path,
-      use_cached_scan: true,
-    });
-    return response.data;
-  }
+        {/* Stats */}
+        <Grid container spacing={3} sx={{ mb: 4 }}>
+          <Grid item xs={12} md={4}>
+            <Paper sx={{ p: 3, textAlign: "center" }}>
+              <Typography variant="h3" color="primary" fontWeight={600}>
+                {stats.filesOrganized}
+              </Typography>
+              <Typography variant="body2" color="text.secondary">
+                Files Organized
+              </Typography>
+            </Paper>
+          </Grid>
+          <Grid item xs={12} md={4}>
+            <Paper sx={{ p: 3, textAlign: "center" }}>
+              <Typography variant="h3" color="secondary" fontWeight={600}>
+                {stats.foldersCreated}
+              </Typography>
+              <Typography variant="body2" color="text.secondary">
+                Folders Created
+              </Typography>
+            </Paper>
+          </Grid>
+          <Grid item xs={12} md={4}>
+            <Paper sx={{ p: 3, textAlign: "center" }}>
+              <Box
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: 1,
+                }}
+              >
+                <AccessTime color="action" />
+                <Typography variant="body2" color="text.secondary">
+                  {stats.lastScan || "No scans yet"}
+                </Typography>
+              </Box>
+            </Paper>
+          </Grid>
+        </Grid>
 
-  // Organization
-  async validatePlan(path: string, plan: OrganizationPlan): Promise<any> {
-    const response = await this.client.post("/plan/validate", { path, plan });
-    return response.data;
-  }
+        {/* Features */}
+        <Grid container spacing={3}>
+          {features.map((feature, index) => (
+            <Grid item xs={12} md={4} key={index}>
+              <Card
+                sx={{
+                  height: "100%",
+                  cursor: "pointer",
+                  transition: "all 0.3s ease",
+                  "&:hover": {
+                    transform: "translateY(-8px)",
+                    boxShadow: `0 12px 40px ${alpha(feature.color, 0.3)}`,
+                  },
+                }}
+                onClick={() => navigate(feature.path)}
+              >
+                <CardContent sx={{ textAlign: "center", p: 4 }}>
+                  <Box
+                    sx={{
+                      width: 80,
+                      height: 80,
+                      borderRadius: 3,
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      mx: "auto",
+                      mb: 3,
+                      backgroundColor: alpha(feature.color, 0.1),
+                      color: feature.color,
+                    }}
+                  >
+                    {feature.icon}
+                  </Box>
+                  <Typography variant="h5" gutterBottom fontWeight={600}>
+                    {feature.title}
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary">
+                    {feature.description}
+                  </Typography>
+                </CardContent>
+              </Card>
+            </Grid>
+          ))}
+        </Grid>
+      </Box>
+    </Container>
+  );
+};
 
-  async savePlan(path: string, plan: OrganizationPlan): Promise<any> {
-    const response = await this.client.post("/plan/save", { path, plan });
-    return response.data;
-  }
-
-  async executeOrganization(
-    path: string,
-    dryRun: boolean = true
-  ): Promise<TaskResponse> {
-    const response = await this.client.post<TaskResponse>("/organize", {
-      path,
-      dry_run: dryRun,
-    });
-    return response.data;
-  }
-
-  // Backups
-  async createBackup(path: string, name?: string): Promise<any> {
-    const response = await this.client.post("/backup", {
-      path,
-      backup_name: name,
-    });
-    return response.data;
-  }
-
-  async listBackups(): Promise<any> {
-    const response = await this.client.get("/backups");
-    return response.data;
-  }
-
-  // Configuration
-  async getConfig(): Promise<any> {
-    const response = await this.client.get("/config");
-    return response.data;
-  }
-
-  // Server-sent events for real-time updates
-  subscribeToTask(
-    taskId: string,
-    onUpdate: (data: TaskStatus) => void
-  ): EventSource {
-    const eventSource = new EventSource(`${API_BASE_URL}/events/${taskId}`);
-
-    eventSource.onmessage = (event) => {
-      const data = JSON.parse(event.data);
-      onUpdate(data);
-    };
-
-    return eventSource;
-  }
-}
-
-export const api = new ApiService();
+export default HomePage;

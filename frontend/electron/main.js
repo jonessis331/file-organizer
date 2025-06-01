@@ -33,8 +33,8 @@ function createWindow() {
 function startPythonBackend() {
   // Path to your Python API
   const apiPath = isDev
-    ? path.join(__dirname, "../../api.py")
-    : path.join(process.resourcesPath, "api.py");
+    ? path.join(__dirname, "../../backend/api/main.py")
+    : path.join(process.resourcesPath, "backend/api/main.py");
 
   console.log("Starting Python backend at:", apiPath);
 

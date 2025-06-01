@@ -1,43 +1,42 @@
 # Python
-    __pycache__/
-    *.py[cod]
-    *$py.class
-    *.so
-    .Python
-    venv/
-    env/
-    ENV/
-    .venv
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+env/
+ENV/
+.venv
 
-    # IDE
-    .vscode/
-    .idea/
-    *.swp
-    *.swo
-    .DS_Store
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
 
-    # Project specific
-    data/
-    logs/
-    *.log
-    .env
-    test_folder/
+# Project specific
+data/
+logs/
+*.log
+.env
+test_folder/
 
-    # Distribution
-    dist/
-    build/
-    *.egg-info/
+# Distribution
+dist/
+build/
+*.egg-info/
 
-    # Testing
-    .pytest_cache/
-    .coverage
-    htmlcov/
-    .tox/
-    .mypy_cache/
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+.mypy_cache/
 
-    # Node (for frontend)
-    frontend/node_modules/
-    npm-debug.log*
-    yarn-debug.log*
-    yarn-error.log*
-    
+# Node (for frontend)
+frontend/node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*

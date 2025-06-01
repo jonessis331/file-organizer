@@ -1,54 +1,62 @@
 import React, { useState, useEffect } from "react";
 import {
-  Container,
-  Typography,
-  Button,
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Link,
+  useLocation,
+} from "react-router-dom";
+import {
+  ThemeProvider,
+  createTheme,
+  CssBaseline,
   Box,
-  Paper,
-  Alert,
-  LinearProgress,
+  Drawer,
+  AppBar,
+  Toolbar,
+  Typography,
+  IconButton,
   List,
   ListItem,
+  ListItemIcon,
   ListItemText,
-  Chip,
+  Badge,
+  Tooltip,
+  alpha,
 } from "@mui/material";
-import { ThemeProvider, createTheme } from "@mui/material/styles";
-import CssBaseline from "@mui/material/CssBaseline";
-import FolderOpenIcon from "@mui/icons-material/FolderOpen";
-import PlayArrowIcon from "@mui/icons-material/PlayArrow";
-import axios from "axios";
+import {
+  Menu as MenuIcon,
+  Home as HomeIcon,
+  Scanner as ScannerIcon,
+  AutoAwesome as OrganizeIcon,
+  Settings as SettingsIcon,
+  Brightness4 as DarkIcon,
+  Brightness7 as LightIcon,
+  CheckCircle as ConnectedIcon,
+  Error as DisconnectedIcon,
+} from "@mui/icons-material";
 
-const API_URL = "http://localhost:8765/api";
+// Import pages
+import HomePage from "./pages/HomePage";
+// import ScanPage from "./pages/ScanPage";
+// import OrganizePage from "./pages/OrganizePage";
+// import SettingsPage from "./pages/SettingsPage";
 
-const darkTheme = createTheme({
-  palette: {
-    mode: "dark",
-  },
-});
+// Import API service
+import { api } from "./services/api";
 
-interface Task {
-  task_id: string;
-  status: string;
-  progress: number;
-  message: string;
-}
+const drawerWidth = 240;
 
-function App() {
-  const [selectedFolder, setSelectedFolder] = useState<string | null>(null);
-  const [isScanning, setIsScanning] = useState(false);
-  const [currentTask, setCurrentTask] = useState<Task | null>(null);
+function AppContent() {
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const [darkMode, setDarkMode] = useState(true);
   const [apiConnected, setApiConnected] = useState(false);
-  const [scanResults, setScanResults] = useState<any>(null);
+  const location = useLocation();
 
-  // Check API connection
   useEffect(() => {
     const checkApi = async () => {
-      try {
-        const response = await axios.get(`${API_URL}/`);
-        setApiConnected(response.status === 200);
-      } catch (error) {
-        setApiConnected(false);
-      }
+      const connected = await api.checkHealth();
+      setApiConnected(connected);
     };
 
     checkApi();
@@ -56,179 +64,250 @@ function App() {
     return () => clearInterval(interval);
   }, []);
 
-  // Poll task status
-  useEffect(() => {
-    if (
-      !currentTask ||
-      currentTask.status === "completed" ||
-      currentTask.status === "failed"
-    ) {
-      return;
-    }
+  const theme = createTheme({
+    palette: {
+      mode: darkMode ? "dark" : "light",
+      primary: {
+        main: darkMode ? "#90caf9" : "#1976d2",
+      },
+      secondary: {
+        main: darkMode ? "#f48fb1" : "#dc004e",
+      },
+      background: {
+        default: darkMode ? "#0a0a0a" : "#f5f5f5",
+        paper: darkMode ? "#1a1a1a" : "#ffffff",
+      },
+    },
+    typography: {
+      fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
+      h1: {
+        fontWeight: 700,
+      },
+      h2: {
+        fontWeight: 600,
+      },
+      h3: {
+        fontWeight: 600,
+      },
+    },
+    shape: {
+      borderRadius: 16,
+    },
+    components: {
+      MuiButton: {
+        styleOverrides: {
+          root: {
+            textTransform: "none",
+            fontWeight: 600,
+            borderRadius: 12,
+            padding: "10px 24px",
+          },
+        },
+      },
+      MuiPaper: {
+        styleOverrides: {
+          root: {
+            backgroundImage: "none",
+            boxShadow: darkMode
+              ? "0 8px 32px 0 rgba(0, 0, 0, 0.37)"
+              : "0 8px 32px 0 rgba(31, 38, 135, 0.15)",
+          },
+        },
+      },
+    },
+  });
 
-    const interval = setInterval(async () => {
-      try {
-        const response = await axios.get(
-          `${API_URL}/task/${currentTask.task_id}`
-        );
-        const task = response.data;
-        setCurrentTask(task);
+  const menuItems = [
+    { text: "Home", icon: <HomeIcon />, path: "/" },
+    { text: "Scan", icon: <ScannerIcon />, path: "/scan" },
+    { text: "Organize", icon: <OrganizeIcon />, path: "/organize" },
+    { text: "Settings", icon: <SettingsIcon />, path: "/settings" },
+  ];
 
-        if (task.status === "completed") {
-          setIsScanning(false);
-          // Get scan results
-          const resultsResponse = await axios.get(
-            `${API_URL}/scan/${task.task_id}/results`
-          );
-          setScanResults(resultsResponse.data);
-        } else if (task.status === "failed") {
-          setIsScanning(false);
-        }
-      } catch (error) {
-        console.error("Error polling task:", error);
-      }
-    }, 1000);
-
-    return () => clearInterval(interval);
-  }, [currentTask]);
-
-  const handleSelectFolder = async () => {
-    const folder = await (window as any).electron.selectFolder();
-    if (folder) {
-      setSelectedFolder(folder);
-      setScanResults(null);
-    }
-  };
-
-  const handleStartScan = async () => {
-    if (!selectedFolder) return;
-
-    setIsScanning(true);
-    try {
-      const response = await axios.post(`${API_URL}/scan`, {
-        path: selectedFolder,
-        max_files: 1000,
-      });
-
-      setCurrentTask({
-        task_id: response.data.task_id,
-        status: "pending",
-        progress: 0,
-        message: "Starting scan...",
-      });
-    } catch (error) {
-      console.error("Error starting scan:", error);
-      setIsScanning(false);
-    }
-  };
-
-  return (
-    <ThemeProvider theme={darkTheme}>
-      <CssBaseline />
-      <Container maxWidth="md" sx={{ mt: 4 }}>
-        <Typography variant="h3" component="h1" gutterBottom>
+  const drawer = (
+    <Box>
+      <Toolbar
+        sx={{
+          background: `linear-gradient(135deg, ${theme.palette.primary.main} 0%, ${theme.palette.secondary.main} 100%)`,
+          color: "white",
+        }}
+      >
+        <Typography variant="h6" noWrap component="div">
           File Organizer
         </Typography>
-
-        {!apiConnected && (
-          <Alert severity="error" sx={{ mb: 2 }}>
-            Python API is not running. Please start it with: python api.py
-          </Alert>
-        )}
-
-        <Paper sx={{ p: 3, mb: 3 }}>
-          <Typography variant="h6" gutterBottom>
-            Select a folder to organize
-          </Typography>
-
-          <Box sx={{ display: "flex", gap: 2, alignItems: "center", mb: 2 }}>
-            <Button
-              variant="contained"
-              startIcon={<FolderOpenIcon />}
-              onClick={handleSelectFolder}
-              disabled={isScanning}
-            >
-              Choose Folder
-            </Button>
-
-            {selectedFolder && (
-              <Typography variant="body2" color="text.secondary">
-                {selectedFolder}
-              </Typography>
-            )}
-          </Box>
-
-          <Button
-            variant="contained"
-            color="success"
-            startIcon={<PlayArrowIcon />}
-            onClick={handleStartScan}
-            disabled={!selectedFolder || !apiConnected || isScanning}
-            fullWidth
+      </Toolbar>
+      <List>
+        {menuItems.map((item) => (
+          <ListItem
+            key={item.text}
+            component={Link}
+            to={item.path}
+            onClick={() => setMobileOpen(false)}
+            sx={{
+              borderRadius: 2,
+              mx: 1,
+              my: 0.5,
+              backgroundColor:
+                location.pathname === item.path
+                  ? alpha(theme.palette.primary.main, 0.15)
+                  : "transparent",
+              "&:hover": {
+                backgroundColor: alpha(theme.palette.primary.main, 0.08),
+              },
+            }}
           >
-            Start Scan
-          </Button>
-        </Paper>
-
-        {currentTask && (
-          <Paper sx={{ p: 3, mb: 3 }}>
-            <Box
-              sx={{ display: "flex", justifyContent: "space-between", mb: 1 }}
+            <ListItemIcon
+              sx={{
+                color:
+                  location.pathname === item.path
+                    ? theme.palette.primary.main
+                    : theme.palette.text.secondary,
+              }}
             >
-              <Typography variant="h6">Scanning Progress</Typography>
-              <Chip
-                label={currentTask.status}
-                color={
-                  currentTask.status === "completed" ? "success" : "primary"
-                }
-                size="small"
-              />
-            </Box>
-
-            <Typography variant="body2" color="text.secondary" gutterBottom>
-              {currentTask.message}
-            </Typography>
-
-            <LinearProgress
-              variant="determinate"
-              value={currentTask.progress * 100}
-              sx={{ mt: 2 }}
+              {item.icon}
+            </ListItemIcon>
+            <ListItemText
+              primary={item.text}
+              sx={{
+                color:
+                  location.pathname === item.path
+                    ? theme.palette.primary.main
+                    : theme.palette.text.primary,
+              }}
             />
-          </Paper>
-        )}
+          </ListItem>
+        ))}
+      </List>
+    </Box>
+  );
 
-        {scanResults && (
-          <Paper sx={{ p: 3 }}>
-            <Typography variant="h6" gutterBottom>
-              Scan Results
-            </Typography>
+  return (
+    <ThemeProvider theme={theme}>
+      <CssBaseline />
+      <Box sx={{ display: "flex" }}>
+        <AppBar
+          position="fixed"
+          sx={{
+            width: { sm: `calc(100% - ${drawerWidth}px)` },
+            ml: { sm: `${drawerWidth}px` },
+            backgroundColor: theme.palette.background.paper,
+            color: theme.palette.text.primary,
+            boxShadow: "none",
+            borderBottom: `1px solid ${theme.palette.divider}`,
+          }}
+        >
+          <Toolbar>
+            <IconButton
+              color="inherit"
+              edge="start"
+              onClick={() => setMobileOpen(!mobileOpen)}
+              sx={{ mr: 2, display: { sm: "none" } }}
+            >
+              <MenuIcon />
+            </IconButton>
 
-            <List>
-              <ListItem>
-                <ListItemText
-                  primary="Total Files"
-                  secondary={scanResults.analysis?.total_files || 0}
-                />
-              </ListItem>
-              <ListItem>
-                <ListItemText
-                  primary="Files Scanned"
-                  secondary={scanResults.files?.length || 0}
-                />
-              </ListItem>
-              <ListItem>
-                <ListItemText
-                  primary="Organized Folders Found"
-                  secondary={
-                    scanResults.analysis?.organized_folders?.length || 0
-                  }
-                />
-              </ListItem>
-            </List>
-          </Paper>
-        )}
-      </Container>
+            <Box sx={{ flexGrow: 1 }} />
+
+            <Tooltip
+              title={apiConnected ? "API Connected" : "API Disconnected"}
+            >
+              <IconButton>
+                <Badge
+                  variant="dot"
+                  color={apiConnected ? "success" : "error"}
+                  sx={{
+                    "& .MuiBadge-badge": {
+                      boxShadow: `0 0 0 2px ${theme.palette.background.paper}`,
+                    },
+                  }}
+                >
+                  {apiConnected ? <ConnectedIcon /> : <DisconnectedIcon />}
+                </Badge>
+              </IconButton>
+            </Tooltip>
+
+            <IconButton onClick={() => setDarkMode(!darkMode)} color="inherit">
+              {darkMode ? <LightIcon /> : <DarkIcon />}
+            </IconButton>
+          </Toolbar>
+        </AppBar>
+
+        <Box
+          component="nav"
+          sx={{ width: { sm: drawerWidth }, flexShrink: { sm: 0 } }}
+        >
+          <Drawer
+            variant="temporary"
+            open={mobileOpen}
+            onClose={() => setMobileOpen(false)}
+            ModalProps={{
+              keepMounted: true,
+            }}
+            sx={{
+              display: { xs: "block", sm: "none" },
+              "& .MuiDrawer-paper": {
+                boxSizing: "border-box",
+                width: drawerWidth,
+                backgroundColor: theme.palette.background.paper,
+              },
+            }}
+          >
+            {drawer}
+          </Drawer>
+          <Drawer
+            variant="permanent"
+            sx={{
+              display: { xs: "none", sm: "block" },
+              "& .MuiDrawer-paper": {
+                boxSizing: "border-box",
+                width: drawerWidth,
+                backgroundColor: theme.palette.background.paper,
+                borderRight: `1px solid ${theme.palette.divider}`,
+              },
+            }}
+            open
+          >
+            {drawer}
+          </Drawer>
+        </Box>
+
+        <Box
+          component="main"
+          sx={{
+            flexGrow: 1,
+            p: 3,
+            width: { sm: `calc(100% - ${drawerWidth}px)` },
+            backgroundColor: theme.palette.background.default,
+            minHeight: "100vh",
+          }}
+        >
+          <Toolbar />
+          <Routes>
+            <Route
+              path="/"
+              element={<HomePage apiConnected={apiConnected} />}
+            />
+            {/* <Route
+              path="/scan"
+              element={<ScanPage apiConnected={apiConnected} />}
+            />
+            <Route
+              path="/organize"
+              element={<OrganizePage apiConnected={apiConnected} />}
+            />
+            <Route path="/settings" element={<SettingsPage />} /> */}
+          </Routes>
+        </Box>
+      </Box>
     </ThemeProvider>
+  );
+}
+
+function App() {
+  return (
+    <Router>
+      <AppContent />
+    </Router>
   );
 }
 
