@@ -38,8 +38,8 @@ import {
 
 // Import pages
 import HomePage from "./pages/HomePage";
-// import ScanPage from "./pages/ScanPage";
-// import OrganizePage from "./pages/OrganizePage";
+import ScanPage from "./pages/ScanPage";
+import OrganizePage from "./pages/OrganizePage";
 // import SettingsPage from "./pages/SettingsPage";
 
 // Import API service
@@ -287,7 +287,7 @@ function AppContent() {
               path="/"
               element={<HomePage apiConnected={apiConnected} />}
             />
-            {/* <Route
+            <Route
               path="/scan"
               element={<ScanPage apiConnected={apiConnected} />}
             />
@@ -295,7 +295,7 @@ function AppContent() {
               path="/organize"
               element={<OrganizePage apiConnected={apiConnected} />}
             />
-            <Route path="/settings" element={<SettingsPage />} /> */}
+            {/* <Route path="/settings" element={<SettingsPage />} /> */}
           </Routes>
         </Box>
       </Box>

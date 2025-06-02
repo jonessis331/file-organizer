@@ -31,27 +31,9 @@ function createWindow() {
 }
 
 function startPythonBackend() {
-  // Path to your Python API
-  const apiPath = isDev
-    ? path.join(__dirname, "../../backend/api/main.py")
-    : path.join(process.resourcesPath, "backend/api/main.py");
-
-  console.log("Starting Python backend at:", apiPath);
-
-  pythonProcess = spawn("python", [apiPath]);
-
-  pythonProcess.stdout.on("data", (data) => {
-    console.log(`Python: ${data}`);
-  });
-
-  pythonProcess.stderr.on("data", (data) => {
-    console.error(`Python Error: ${data}`);
-  });
-
-  pythonProcess.on("close", (code) => {
-    console.log(`Python process exited with code ${code}`);
-    pythonProcess = null;
-  });
+  // Don't start Python automatically - let user start it manually
+  console.log("Python backend should be started manually:");
+  console.log("python backend/api/main.py");
 }
 
 app.whenReady().then(() => {
