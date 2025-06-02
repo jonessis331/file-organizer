@@ -543,6 +543,24 @@ async def general_exception_handler(request: Request, exc: Exception):
         }
     )
 
+@app.get("/api/plan/load")
+async def load_plan():
+    """Load the saved organization plan"""
+    try:
+        plan_path = Path("data/plan.json")
+        if not plan_path.exists():
+            raise HTTPException(status_code=404, detail="No plan found")
+        
+        with open(plan_path, 'r') as f:
+            plan = json.load(f)
+        
+        return {
+            "success": True,
+            "plan": plan
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
 if __name__ == "__main__":
     import uvicorn
     

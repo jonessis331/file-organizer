@@ -138,39 +138,18 @@ const OrganizePage: React.FC<OrganizePageProps> = ({ apiConnected }) => {
           clearInterval(interval);
 
           if (type === "prompt") {
-            // In a real app, you'd get the plan from the API
-            // For now, we'll create a mock plan
-            const mockPlan: OrganizePlan = {
-              folders: [
-                "Documents/Work",
-                "Documents/Personal",
-                "Media/Images",
-                "Media/Videos",
-                "Projects/Active",
-                "Projects/Archive",
-                "Downloads/Software",
-                "Downloads/Documents",
-              ],
-              moves: [
-                {
-                  file: "resume_2024.pdf",
-                  relative_path: "resume_2024.pdf",
-                  new_path: "Documents/Work/resume_2024.pdf",
-                  reason: "Work-related document",
-                },
-                {
-                  file: "vacation_photo.jpg",
-                  relative_path: "vacation_photo.jpg",
-                  new_path: "Media/Images/vacation_photo.jpg",
-                  reason: "Personal photo",
-                },
-                // Add more mock moves
-              ],
-            };
-
-            setPlan(mockPlan);
-            localStorage.setItem("organizationPlan", JSON.stringify(mockPlan));
-            setActiveStep(1);
+            // Load the generated plan from file
+            try {
+              // In a real implementation, you'd get this from the API
+              // For now, we'll show a message to copy the plan
+              loadPlanFromFile();
+              setActiveStep(1);
+              Alert(
+                "Please copy the generated prompt from data/gpt_prompt.txt to ChatGPT/Claude and save the response to data/plan.json"
+              );
+            } catch (error) {
+              setError("Failed to load generated plan");
+            }
           } else {
             // Organization complete
             setActiveStep(2);
@@ -194,6 +173,21 @@ const OrganizePage: React.FC<OrganizePageProps> = ({ apiConnected }) => {
         setError(`Failed to get ${type} status`);
       }
     }, 1000);
+  };
+
+  const loadPlanFromFile = async () => {
+    try {
+      // In a real app, this would be an API call to load the plan
+      const response = await fetch("../data/plan.json");
+      const planData = await response.json();
+      setPlan(planData);
+      localStorage.setItem("organizationPlan", JSON.stringify(planData));
+      setActiveStep(1);
+    } catch (error) {
+      setError(
+        "Failed to load plan. Please ensure plan.json exists in the data folder."
+      );
+    }
   };
 
   const handleExecutePlan = async () => {
@@ -463,25 +457,33 @@ const OrganizePage: React.FC<OrganizePageProps> = ({ apiConnected }) => {
             Organization Complete!
           </Typography>
           <Typography variant="body1" color="text.secondary" sx={{ mb: 4 }}>
-            Your files have been successfully organized
+            Your files have been successfully organized according to the
+            AI-generated plan.
           </Typography>
-          <Button
-            variant="contained"
-            color="primary"
-            startIcon={<RestartAlt />}
-            onClick={() => {
-              setPlan(null);
-              setCurrentTask(null);
-              setActiveStep(0);
-              setExpandedMoves(new Set());
-              localStorage.removeItem("organizationPlan");
-            }}
-          >
-            Organize Another Folder
-          </Button>
+          <Box sx={{ display: "flex", gap: 2, justifyContent: "center" }}>
+            <Button
+              variant="contained"
+              size="large"
+              startIcon={<RestartAlt />}
+              onClick={() => {
+                setActiveStep(0);
+                setPlan(null);
+                setCurrentTask(null);
+                setError("");
+              }}
+            >
+              Organize Another Folder
+            </Button>
+            <Button
+              variant="outlined"
+              size="large"
+              onClick={() => (window.location.href = "/")}
+            >
+              Back to Home
+            </Button>
+          </Box>
         </Paper>
       )}
-
       {/* Loading / Progress Display */}
       {currentTask && currentTask.status === "pending" && (
         <Paper sx={{ p: 3, mt: 3 }}>
@@ -499,19 +501,19 @@ const OrganizePage: React.FC<OrganizePageProps> = ({ apiConnected }) => {
         maxWidth="sm"
         fullWidth
       >
-        <DialogTitle>Confirm Execution</DialogTitle>
+        <DialogTitle>Confirm {isDryRun ? "Dry Run" : "Execution"}</DialogTitle>
         <DialogContent>
           <Typography>
             Are you sure you want to{" "}
             {isDryRun
-              ? "preview the plan (dry run)"
-              : "execute the organization plan"}
+              ? "preview the plan without moving files"
+              : "execute the full file reorganization"}
             ?
           </Typography>
           {!isDryRun && (
             <Alert severity="warning" sx={{ mt: 2 }}>
-              This will move your files. Please ensure you're satisfied with the
-              plan before proceeding.
+              This will move files on your system. Please make sure you're ready
+              before proceeding.
             </Alert>
           )}
         </DialogContent>
@@ -522,7 +524,7 @@ const OrganizePage: React.FC<OrganizePageProps> = ({ apiConnected }) => {
             variant="contained"
             color={isDryRun ? "info" : "success"}
           >
-            {isDryRun ? "Run Preview" : "Execute"}
+            {isDryRun ? "Run Dry Preview" : "Execute"}
           </Button>
         </DialogActions>
       </Dialog>
