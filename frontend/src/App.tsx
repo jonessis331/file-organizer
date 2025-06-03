@@ -40,7 +40,7 @@ import {
 import HomePage from "./pages/HomePage";
 import ScanPage from "./pages/ScanPage";
 import OrganizePage from "./pages/OrganizePage";
-// import SettingsPage from "./pages/SettingsPage";
+import SettingsPage from "./pages/SettingsPage";
 
 // Import API service
 import { api } from "./services/api";
@@ -295,7 +295,7 @@ function AppContent() {
               path="/organize"
               element={<OrganizePage apiConnected={apiConnected} />}
             />
-            {/* <Route path="/settings" element={<SettingsPage />} /> */}
+            <Route path="/settings" element={<SettingsPage />} />
           </Routes>
         </Box>
       </Box>

@@ -144,9 +144,9 @@ const OrganizePage: React.FC<OrganizePageProps> = ({ apiConnected }) => {
               // For now, we'll show a message to copy the plan
               loadPlanFromFile();
               setActiveStep(1);
-              Alert(
-                "Please copy the generated prompt from data/gpt_prompt.txt to ChatGPT/Claude and save the response to data/plan.json"
-              );
+              //   Alert(
+              //     "Please copy the generated prompt from data/gpt_prompt.txt to ChatGPT/Claude and save the response to data/plan.json"
+              //   );
             } catch (error) {
               setError("Failed to load generated plan");
             }
@@ -177,15 +177,13 @@ const OrganizePage: React.FC<OrganizePageProps> = ({ apiConnected }) => {
 
   const loadPlanFromFile = async () => {
     try {
-      // In a real app, this would be an API call to load the plan
-      const response = await fetch("../data/plan.json");
-      const planData = await response.json();
+      const planData = await api.loadPlan();
       setPlan(planData);
       localStorage.setItem("organizationPlan", JSON.stringify(planData));
       setActiveStep(1);
     } catch (error) {
       setError(
-        "Failed to load plan. Please ensure plan.json exists in the data folder."
+        "Failed to load plan. Please ensure plan.json exists in the backend/data folder."
       );
     }
   };

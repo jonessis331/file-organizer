@@ -71,6 +71,10 @@ class ApiService {
     const response = await axios.get(`${API_URL}/api/config`);
     return response.data;
   }
+  async loadPlan(): Promise<any> {
+    const response = await axios.get(`${API_URL}/api/plan/load`);
+    return response.data.plan;
+  }
 
   subscribeToTask(
     taskId: string,

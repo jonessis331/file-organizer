@@ -19,7 +19,10 @@ def test_health():
     """Test API health endpoint"""
     print("🏥 Testing health endpoint...")
     response = requests.get(f"{API_BASE}/")
+    
     print(f"Status: {response.status_code}")
+    print(f"Raw response: {response.text}")
+
     print(f"Response: {response.json()}")
     print("✅ Health check passed\n")
 

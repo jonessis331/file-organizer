@@ -208,7 +208,8 @@ async def organize_files_async(task_id: str, path: str, dry_run: bool):
         from backend.core.organizer import create_backup_manifest
         
         # Load plan
-        plan = load_plan()
+        plan_response = await load_plan()
+        plan =  plan_response['plan'] 
         total_moves = len(plan.get("moves", []))
         
         update_task(task_id, progress=0.2, message=f"Validating {total_moves} moves...")
@@ -354,6 +355,24 @@ async def save_organization_plan(request: OrganizePlanRequest):
             "success": True,
             "message": "Plan saved successfully",
             "path": "data/plan.json"
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/api/plan/load")
+async def load_plan():
+    """Load the saved organization plan"""
+    try:
+        plan_path = Path("data/plan.json")
+        if not plan_path.exists():
+            raise HTTPException(status_code=404, detail="No plan found")
+        
+        with open(plan_path, 'r') as f:
+            plan = json.load(f)
+        
+        return {
+            "success": True,
+            "plan": plan
         }
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
@@ -543,23 +562,6 @@ async def general_exception_handler(request: Request, exc: Exception):
         }
     )
 
-@app.get("/api/plan/load")
-async def load_plan():
-    """Load the saved organization plan"""
-    try:
-        plan_path = Path("data/plan.json")
-        if not plan_path.exists():
-            raise HTTPException(status_code=404, detail="No plan found")
-        
-        with open(plan_path, 'r') as f:
-            plan = json.load(f)
-        
-        return {
-            "success": True,
-            "plan": plan
-        }
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
 
 if __name__ == "__main__":
     import uvicorn
