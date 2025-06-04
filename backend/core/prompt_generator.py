@@ -11,6 +11,20 @@ MAX_SNIPPET_CHARS = 150
 def generate_konmari_prompt(scan_path, max_files=MAX_FILES):
     """Generate an optimized prompt following KonMari principles"""
     
+     # Load organization memory
+    memory = load_organization_memory(scan_path)
+     # Add memory context to prompt
+    memory_context = ""
+    if memory:
+        memory_context = f"""
+    **Previous Organization Context:**
+    - Last organized: {memory['timestamp']}
+    - Existing folder structure: {', '.join(memory['folders_created'])}
+    - Known patterns: {json.dumps(memory['organization_patterns'], indent=2)}
+    
+    Please maintain consistency with the existing organization structure and extend it for new files.
+    """
+
     # Load or generate scan results
     scan_results_path = Path("data/scan_results.json")
     
@@ -50,6 +64,7 @@ def generate_konmari_prompt(scan_path, max_files=MAX_FILES):
     
     # Create the prompt
     prompt = f"""You are an expert file organization assistant using the KonMari Method principles.
+    {memory_context}
 
     **Current Situation:**
     - Root directory has {len(files)} files needing organization
@@ -64,7 +79,8 @@ def generate_konmari_prompt(scan_path, max_files=MAX_FILES):
     5. **Clarity**: Use clear, descriptive folder names that "spark joy"
 
     **Your Task:**
-    Create a reorganization plan that:
+    Create a reorganization plan 
+    that:
     - Groups files into intuitive categories based on content and purpose
     - Preserves existing well-organized project folders
     - Creates a clean, navigable structure
@@ -141,6 +157,37 @@ def sample_diverse_files(files, target_count):
                             break
     
     return sampled[:target_count]
+
+def load_organization_memory(folder_path):
+    """Load previous organization schema"""
+    memory_file = Path(folder_path) / '.file_organizer_memory.json'
+    if memory_file.exists():
+        with open(memory_file, 'r') as f:
+            return json.load(f)
+    return None
+
+def save_organization_memory(folder_path, plan):
+    """Save organization schema for future reference"""
+    memory = {
+        'timestamp': datetime.now().isoformat(),
+        'folders_created': plan.get('folders', []),
+        'organization_patterns': {}
+    }
+    
+    # Extract patterns from moves
+    for move in plan.get('moves', []):
+        file_type = Path(move['file']).suffix
+        dest_folder = '/'.join(move['new_path'].split('/')[:-1])
+        
+        if file_type not in memory['organization_patterns']:
+            memory['organization_patterns'][file_type] = []
+        if dest_folder not in memory['organization_patterns'][file_type]:
+            memory['organization_patterns'][file_type].append(dest_folder)
+    
+    memory_file = Path(folder_path) / '.file_organizer_memory.json'
+    with open(memory_file, 'w') as f:
+        json.dump(memory, f, indent=2)
+
 
 def get_top_extensions(file_types, n=5):
     """Get top N file extensions by count"""

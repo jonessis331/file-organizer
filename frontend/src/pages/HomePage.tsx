@@ -87,7 +87,7 @@ const HomePage: React.FC<HomePageProps> = ({ apiConnected }) => {
             WebkitTextFillColor: "transparent",
           }}
         >
-          File Organizer
+          Neatly
         </Typography>
         <Typography variant="h5" color="text.secondary" sx={{ mb: 4 }}>
           Transform your digital chaos into organized bliss

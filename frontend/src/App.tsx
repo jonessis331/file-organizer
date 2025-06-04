@@ -41,7 +41,10 @@ import HomePage from "./pages/HomePage";
 import ScanPage from "./pages/ScanPage";
 import OrganizePage from "./pages/OrganizePage";
 import SettingsPage from "./pages/SettingsPage";
-
+//import neatlyLogo from "../assets/neatly_logo.png";
+import neatlyLogo from "../assets/neatly_icon.png";
+import AccountPage from "./pages/AccountPage";
+import { AppStateProvider } from "./contexts/AppStateContext";
 // Import API service
 import { api } from "./services/api";
 
@@ -132,8 +135,19 @@ function AppContent() {
           color: "white",
         }}
       >
+        <Box
+          component="img"
+          src={neatlyLogo}
+          alt="Neatly Logo"
+          sx={{
+            height: 40,
+            width: "auto",
+            // If in light mode, invert the white logo to black
+            filter: darkMode ? "invert(1)" : "invert(1)",
+          }}
+        />
         <Typography variant="h6" noWrap component="div">
-          File Organizer
+          Neatly
         </Typography>
       </Toolbar>
       <List>
@@ -182,124 +196,130 @@ function AppContent() {
   );
 
   return (
-    <ThemeProvider theme={theme}>
-      <CssBaseline />
-      <Box sx={{ display: "flex" }}>
-        <AppBar
-          position="fixed"
-          sx={{
-            width: { sm: `calc(100% - ${drawerWidth}px)` },
-            ml: { sm: `${drawerWidth}px` },
-            backgroundColor: theme.palette.background.paper,
-            color: theme.palette.text.primary,
-            boxShadow: "none",
-            borderBottom: `1px solid ${theme.palette.divider}`,
-          }}
-        >
-          <Toolbar>
-            <IconButton
-              color="inherit"
-              edge="start"
-              onClick={() => setMobileOpen(!mobileOpen)}
-              sx={{ mr: 2, display: { sm: "none" } }}
-            >
-              <MenuIcon />
-            </IconButton>
-
-            <Box sx={{ flexGrow: 1 }} />
-
-            <Tooltip
-              title={apiConnected ? "API Connected" : "API Disconnected"}
-            >
-              <IconButton>
-                <Badge
-                  variant="dot"
-                  color={apiConnected ? "success" : "error"}
-                  sx={{
-                    "& .MuiBadge-badge": {
-                      boxShadow: `0 0 0 2px ${theme.palette.background.paper}`,
-                    },
-                  }}
-                >
-                  {apiConnected ? <ConnectedIcon /> : <DisconnectedIcon />}
-                </Badge>
+    <AppStateProvider>
+      <ThemeProvider theme={theme}>
+        <CssBaseline />
+        <Box sx={{ display: "flex" }}>
+          <AppBar
+            position="fixed"
+            sx={{
+              width: { sm: `calc(100% - ${drawerWidth}px)` },
+              ml: { sm: `${drawerWidth}px` },
+              backgroundColor: theme.palette.background.paper,
+              color: theme.palette.text.primary,
+              boxShadow: "none",
+              borderBottom: `1px solid ${theme.palette.divider}`,
+            }}
+          >
+            <Toolbar>
+              <IconButton
+                color="inherit"
+                edge="start"
+                onClick={() => setMobileOpen(!mobileOpen)}
+                sx={{ mr: 2, display: { sm: "none" } }}
+              >
+                <MenuIcon />
               </IconButton>
-            </Tooltip>
 
-            <IconButton onClick={() => setDarkMode(!darkMode)} color="inherit">
-              {darkMode ? <LightIcon /> : <DarkIcon />}
-            </IconButton>
-          </Toolbar>
-        </AppBar>
+              <Box sx={{ flexGrow: 1 }} />
 
-        <Box
-          component="nav"
-          sx={{ width: { sm: drawerWidth }, flexShrink: { sm: 0 } }}
-        >
-          <Drawer
-            variant="temporary"
-            open={mobileOpen}
-            onClose={() => setMobileOpen(false)}
-            ModalProps={{
-              keepMounted: true,
-            }}
+              <Tooltip
+                title={apiConnected ? "API Connected" : "API Disconnected"}
+              >
+                <IconButton>
+                  <Badge
+                    variant="dot"
+                    color={apiConnected ? "success" : "error"}
+                    sx={{
+                      "& .MuiBadge-badge": {
+                        boxShadow: `0 0 0 2px ${theme.palette.background.paper}`,
+                      },
+                    }}
+                  >
+                    {apiConnected ? <ConnectedIcon /> : <DisconnectedIcon />}
+                  </Badge>
+                </IconButton>
+              </Tooltip>
+
+              <IconButton
+                onClick={() => setDarkMode(!darkMode)}
+                color="inherit"
+              >
+                {darkMode ? <LightIcon /> : <DarkIcon />}
+              </IconButton>
+            </Toolbar>
+          </AppBar>
+
+          <Box
+            component="nav"
+            sx={{ width: { sm: drawerWidth }, flexShrink: { sm: 0 } }}
+          >
+            <Drawer
+              variant="temporary"
+              open={mobileOpen}
+              onClose={() => setMobileOpen(false)}
+              ModalProps={{
+                keepMounted: true,
+              }}
+              sx={{
+                display: { xs: "block", sm: "none" },
+                "& .MuiDrawer-paper": {
+                  boxSizing: "border-box",
+                  width: drawerWidth,
+                  backgroundColor: theme.palette.background.paper,
+                },
+              }}
+            >
+              {drawer}
+            </Drawer>
+            <Drawer
+              variant="permanent"
+              sx={{
+                display: { xs: "none", sm: "block" },
+                "& .MuiDrawer-paper": {
+                  boxSizing: "border-box",
+                  width: drawerWidth,
+                  backgroundColor: theme.palette.background.paper,
+                  borderRight: `1px solid ${theme.palette.divider}`,
+                },
+              }}
+              open
+            >
+              {drawer}
+            </Drawer>
+          </Box>
+
+          <Box
+            component="main"
             sx={{
-              display: { xs: "block", sm: "none" },
-              "& .MuiDrawer-paper": {
-                boxSizing: "border-box",
-                width: drawerWidth,
-                backgroundColor: theme.palette.background.paper,
-              },
+              flexGrow: 1,
+              p: 3,
+              width: { sm: `calc(100% - ${drawerWidth}px)` },
+              backgroundColor: theme.palette.background.default,
+              minHeight: "100vh",
             }}
           >
-            {drawer}
-          </Drawer>
-          <Drawer
-            variant="permanent"
-            sx={{
-              display: { xs: "none", sm: "block" },
-              "& .MuiDrawer-paper": {
-                boxSizing: "border-box",
-                width: drawerWidth,
-                backgroundColor: theme.palette.background.paper,
-                borderRight: `1px solid ${theme.palette.divider}`,
-              },
-            }}
-            open
-          >
-            {drawer}
-          </Drawer>
+            <Toolbar />
+            <Routes>
+              <Route
+                path="/"
+                element={<HomePage apiConnected={apiConnected} />}
+              />
+              <Route
+                path="/scan"
+                element={<ScanPage apiConnected={apiConnected} />}
+              />
+              <Route
+                path="/organize"
+                element={<OrganizePage apiConnected={apiConnected} />}
+              />
+              <Route path="/settings" element={<SettingsPage />} />
+              <Route path="/account" element={<AccountPage />} />
+            </Routes>
+          </Box>
         </Box>
-
-        <Box
-          component="main"
-          sx={{
-            flexGrow: 1,
-            p: 3,
-            width: { sm: `calc(100% - ${drawerWidth}px)` },
-            backgroundColor: theme.palette.background.default,
-            minHeight: "100vh",
-          }}
-        >
-          <Toolbar />
-          <Routes>
-            <Route
-              path="/"
-              element={<HomePage apiConnected={apiConnected} />}
-            />
-            <Route
-              path="/scan"
-              element={<ScanPage apiConnected={apiConnected} />}
-            />
-            <Route
-              path="/organize"
-              element={<OrganizePage apiConnected={apiConnected} />}
-            />
-            <Route path="/settings" element={<SettingsPage />} />
-          </Routes>
-        </Box>
-      </Box>
-    </ThemeProvider>
+      </ThemeProvider>
+    </AppStateProvider>
   );
 }
 

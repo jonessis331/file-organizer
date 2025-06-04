@@ -43,6 +43,7 @@ import {
   RestartAlt,
 } from "@mui/icons-material";
 import { api, TaskStatus } from "../services/api";
+import FolderTreePreview from "../components/FolderTreePreview";
 
 interface OrganizePlanMove {
   file: string;
@@ -71,7 +72,27 @@ const OrganizePage: React.FC<OrganizePageProps> = ({ apiConnected }) => {
   const [isDryRun, setIsDryRun] = useState(true);
   const [selectedFolder, setSelectedFolder] = useState<string>("");
 
-  const steps = ["Generate Plan", "Review Plan", "Execute Organization"];
+  const steps = ["Generate Plan", "Review Plan", "Execute Organizatxion"];
+
+  useEffect(() => {
+    const savedState = localStorage.getItem("organizePageState");
+    if (savedState) {
+      const state = JSON.parse(savedState);
+      if (state.activeStep !== undefined) setActiveStep(state.activeStep);
+      if (state.plan) setPlan(state.plan);
+      if (state.selectedFolder) setSelectedFolder(state.selectedFolder);
+    }
+  }, []);
+
+  // Save state whenever it changes
+  useEffect(() => {
+    const state = {
+      activeStep,
+      plan,
+      selectedFolder,
+    };
+    localStorage.setItem("organizePageState", JSON.stringify(state));
+  }, [activeStep, plan, selectedFolder]);
 
   useEffect(() => {
     // Load saved folder
@@ -448,7 +469,7 @@ const OrganizePage: React.FC<OrganizePageProps> = ({ apiConnected }) => {
         </>
       )}
 
-      {activeStep === 2 && (
+      {activeStep === 2 && !isDryRun && (
         <Paper sx={{ p: 4, textAlign: "center" }}>
           <CheckCircle sx={{ fontSize: 80, color: "success.main", mb: 2 }} />
           <Typography variant="h4" gutterBottom>
@@ -482,6 +503,7 @@ const OrganizePage: React.FC<OrganizePageProps> = ({ apiConnected }) => {
           </Box>
         </Paper>
       )}
+
       {/* Loading / Progress Display */}
       {currentTask && currentTask.status === "pending" && (
         <Paper sx={{ p: 3, mt: 3 }}>
@@ -526,6 +548,36 @@ const OrganizePage: React.FC<OrganizePageProps> = ({ apiConnected }) => {
           </Button>
         </DialogActions>
       </Dialog>
+
+      {activeStep === 2 && isDryRun && plan && (
+        <Paper sx={{ p: 4, mt: 4 }}>
+          <Typography variant="h4" gutterBottom>
+            Dry Run Preview
+          </Typography>
+          <Alert severity="info" sx={{ mb: 3 }}>
+            This is a preview — no files have been moved yet.
+          </Alert>
+          <FolderTreePreview folders={plan.folders} moves={plan.moves} />
+          <Box
+            sx={{ mt: 3, display: "flex", gap: 2, justifyContent: "center" }}
+          >
+            <Button
+              variant="contained"
+              color="success"
+              startIcon={<PlayArrow />}
+              onClick={() => {
+                setIsDryRun(false);
+                setConfirmDialog(true);
+              }}
+            >
+              Execute for Real
+            </Button>
+            <Button variant="outlined" onClick={() => setActiveStep(1)}>
+              Back to Plan
+            </Button>
+          </Box>
+        </Paper>
+      )}
     </Container>
   );
 };
