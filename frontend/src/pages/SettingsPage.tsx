@@ -100,14 +100,6 @@ const SettingsPage: React.FC = () => {
       setNewSkipFolder("");
     }
   };
-
-  const handleRemoveSkipFolder = (folder: string) => {
-    setSettings((prev) => ({
-      ...prev,
-      skipFolders: prev.skipFolders.filter((f) => f !== folder),
-    }));
-  };
-
   const handleClearData = () => {
     if (
       window.confirm(
@@ -116,6 +108,34 @@ const SettingsPage: React.FC = () => {
     ) {
       localStorage.clear();
       window.location.reload();
+    }
+  };
+
+  const handleRemoveSkipFolder = (folder: string) => {
+    setSettings((prev) => ({
+      ...prev,
+      skipFolders: prev.skipFolders.filter((f) => f !== folder),
+    }));
+  };
+
+  const handleRestoreBackup = async (backupFile: string) => {
+    if (
+      window.confirm(
+        "Are you sure you want to restore from this backup? Current file organization will be reverted."
+      )
+    ) {
+      try {
+        const response = await api.restoreBackup(backupFile);
+        if (response.success) {
+          Alert.success("Backup restored successfully!");
+          loadBackups(); // Refresh the list
+        } else {
+          Alert.error("Failed to restore backup");
+        }
+      } catch (error) {
+        console.error("Failed to restore backup:", error);
+        Alert.error("Failed to restore backup");
+      }
     }
   };
 
@@ -316,7 +336,11 @@ const SettingsPage: React.FC = () => {
                     secondary={`${backup.timestamp} - ${backup.files} files`}
                   />
                   <ListItemSecondaryAction>
-                    <IconButton edge="end" aria-label="restore">
+                    <IconButton
+                      edge="end"
+                      aria-label="restore"
+                      onClick={() => handleRestoreBackup(backup.file)}
+                    >
                       <RestoreFromTrash />
                     </IconButton>
                   </ListItemSecondaryAction>

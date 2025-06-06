@@ -56,6 +56,16 @@ class ApiService {
     return response.data;
   }
 
+  async loadPlan(): Promise<any> {
+    const response = await axios.get(`${API_URL}/api/plan/load`);
+    return response.data;
+  }
+
+  async savePlan(plan: any): Promise<any> {
+    const response = await axios.post(`${API_URL}/api/plan/save`, { plan });
+    return response.data;
+  }
+
   async executeOrganization(
     path: string,
     dryRun: boolean = true
@@ -71,9 +81,25 @@ class ApiService {
     const response = await axios.get(`${API_URL}/api/config`);
     return response.data;
   }
-  async loadPlan(): Promise<any> {
-    const response = await axios.get(`${API_URL}/api/plan/load`);
-    return response.data.plan;
+
+  async listBackups(): Promise<any> {
+    const response = await axios.get(`${API_URL}/api/backups`);
+    return response.data;
+  }
+
+  async createBackup(path: string, name?: string): Promise<any> {
+    const response = await axios.post(`${API_URL}/api/backup`, {
+      path,
+      backup_name: name,
+    });
+    return response.data;
+  }
+
+  async restoreBackup(manifestFile?: string): Promise<any> {
+    const response = await axios.post(`${API_URL}/api/revert`, {
+      manifest_file: manifestFile,
+    });
+    return response.data;
   }
 
   subscribeToTask(
@@ -90,3 +116,5 @@ class ApiService {
 }
 
 export const api = new ApiService();
+export type { TaskResponse as TaskResponseType };
+export type { TaskStatus as TaskStatusType };

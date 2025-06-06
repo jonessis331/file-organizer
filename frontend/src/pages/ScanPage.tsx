@@ -40,6 +40,7 @@ import {
   Refresh,
 } from "@mui/icons-material";
 import { api, TaskStatus } from "../services/api";
+import { useAppState } from "../contexts/AppStateContext";
 
 interface ScanPageProps {
   apiConnected: boolean;
@@ -169,7 +170,7 @@ const ScanPage: React.FC<ScanPageProps> = ({ apiConnected }) => {
   };
 
   const getFileIcon = (extension: string) => {
-    if ([".jpg", ".png", ".gif", ".svg", ".heic"].includes(extension))
+    if ([".jpg", ".png", ".gif", ".svg", ".hiec"].includes(extension))
       return <Image />;
     if ([".mp4", ".avi", ".mov", ".mkv"].includes(extension))
       return <MovieCreation />;

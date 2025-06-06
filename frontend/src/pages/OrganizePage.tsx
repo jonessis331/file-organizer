@@ -72,7 +72,7 @@ const OrganizePage: React.FC<OrganizePageProps> = ({ apiConnected }) => {
   const [isDryRun, setIsDryRun] = useState(true);
   const [selectedFolder, setSelectedFolder] = useState<string>("");
 
-  const steps = ["Generate Plan", "Review Plan", "Execute Organizatxion"];
+  const steps = ["Generate Plan", "Review Plan", "Execute Organization"];
 
   useEffect(() => {
     const savedState = localStorage.getItem("organizePageState");
