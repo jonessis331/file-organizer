@@ -5,6 +5,7 @@ import {
   Route,
   Link,
   useLocation,
+  useNavigate,
 } from "react-router-dom";
 import {
   ThemeProvider,
@@ -56,6 +57,7 @@ function AppContent() {
   const [darkMode, setDarkMode] = useState(true);
   const [apiConnected, setApiConnected] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const checkApi = async () => {
@@ -121,13 +123,17 @@ function AppContent() {
     },
   });
 
+  // Removed Account from menuItems array
   const menuItems = [
     { text: "Home", icon: <HomeIcon />, path: "/" },
     { text: "Scan", icon: <ScannerIcon />, path: "/scan" },
     { text: "Organize", icon: <OrganizeIcon />, path: "/organize" },
     { text: "Settings", icon: <SettingsIcon />, path: "/settings" },
-    { text: "Account", icon: <AccountCircleOutlined />, path: "/account" },
   ];
+
+  const handleAccountClick = () => {
+    navigate("/account");
+  };
 
   const drawer = (
     <Box>
@@ -249,6 +255,25 @@ function AppContent() {
               >
                 {darkMode ? <LightIcon /> : <DarkIcon />}
               </IconButton>
+
+              <Tooltip title="Account">
+                <IconButton
+                  onClick={handleAccountClick}
+                  color="inherit"
+                  sx={{
+                    backgroundColor:
+                      location.pathname === "/account"
+                        ? alpha(theme.palette.primary.main, 0.15)
+                        : "transparent",
+                    color:
+                      location.pathname === "/account"
+                        ? theme.palette.primary.main
+                        : theme.palette.text.primary,
+                  }}
+                >
+                  <AccountCircleOutlined />
+                </IconButton>
+              </Tooltip>
             </Toolbar>
           </AppBar>
 

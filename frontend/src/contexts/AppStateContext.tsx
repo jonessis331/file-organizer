@@ -4,17 +4,15 @@ interface AppState {
   selectedFolder: string | null;
   scanResults: any | null;
   organizationPlan: any | null;
+  isOrganizationComplete?: boolean;
   currentStep: number;
   lastActivity: Date | null;
-  // Add these for ScanPage state persistence
-  isScanning: boolean;
-  currentTask: any | null;
-  scanError: string;
-  // Add these for OrganizePage state persistence
   activeStep: number;
   isDryRun: boolean;
   organizeError: string;
-  // Add API connection state
+  currentTask: any | null;
+  isScanning: boolean;
+  scanError: string;
   apiConnected: boolean;
 }
 
@@ -28,14 +26,15 @@ const defaultState: AppState = {
   selectedFolder: null,
   scanResults: null,
   organizationPlan: null,
+  isOrganizationComplete: false,
   currentStep: 0,
   lastActivity: null,
-  isScanning: false,
-  currentTask: null,
-  scanError: "",
   activeStep: 0,
   isDryRun: true,
   organizeError: "",
+  currentTask: null,
+  isScanning: false,
+  scanError: "",
   apiConnected: false,
 };
 

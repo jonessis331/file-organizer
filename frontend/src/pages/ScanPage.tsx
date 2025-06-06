@@ -109,7 +109,13 @@ const ScanPage: React.FC<ScanPageProps> = ({ apiConnected }) => {
           clearInterval(interval);
           updateState({ isScanning: false });
           const results = await api.getScanResults(taskId);
+
+          // Update state
           updateState({ scanResults: results });
+
+          // IMPORTANT: Save to localStorage so OrganizePage can access it
+          localStorage.setItem("scanResults", JSON.stringify(results));
+
           localStorage.removeItem("currentScanTask");
 
           // Update stats
@@ -120,14 +126,20 @@ const ScanPage: React.FC<ScanPageProps> = ({ apiConnected }) => {
           localStorage.setItem("organizerStats", JSON.stringify(stats));
         } else if (status.status === "failed") {
           clearInterval(interval);
-          updateState({ isScanning: false });
-          updateState({ scanError: status.error || "Scan failed" });
+          updateState({
+            isScanning: false,
+            scanError: status.error || "Scan failed",
+            currentTask: null, // Clear the task on failure
+          });
           localStorage.removeItem("currentScanTask");
         }
       } catch (error) {
         clearInterval(interval);
-        updateState({ isScanning: false });
-        updateState({ scanError: "Failed to get scan status" });
+        updateState({
+          isScanning: false,
+          scanError: "Failed to get scan status",
+          currentTask: null, // Clear the task on error
+        });
         localStorage.removeItem("currentScanTask");
       }
     }, 1000);

@@ -58,6 +58,7 @@ class ApiService {
 
   async loadPlan(): Promise<any> {
     const response = await axios.get(`${API_URL}/api/plan/load`);
+
     return response.data;
   }
 
