@@ -34,6 +34,7 @@ import {
   Brightness7 as LightIcon,
   CheckCircle as ConnectedIcon,
   Error as DisconnectedIcon,
+  AccountCircleOutlined,
 } from "@mui/icons-material";
 
 // Import pages
@@ -125,6 +126,7 @@ function AppContent() {
     { text: "Scan", icon: <ScannerIcon />, path: "/scan" },
     { text: "Organize", icon: <OrganizeIcon />, path: "/organize" },
     { text: "Settings", icon: <SettingsIcon />, path: "/settings" },
+    { text: "Account", icon: <AccountCircleOutlined />, path: "/account" },
   ];
 
   const drawer = (

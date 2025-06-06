@@ -52,11 +52,14 @@ interface FileTypeStats {
 
 const ScanPage: React.FC<ScanPageProps> = ({ apiConnected }) => {
   const theme = useTheme();
-  const [selectedFolder, setSelectedFolder] = useState<string>("");
-  const [isScanning, setIsScanning] = useState(false);
-  const [currentTask, setCurrentTask] = useState<TaskStatus | null>(null);
-  const [scanResults, setScanResults] = useState<any>(null);
-  const [error, setError] = useState<string>("");
+  const { state, updateState } = useAppState();
+  const {
+    selectedFolder,
+    isScanning,
+    currentTask,
+    scanResults,
+    scanError: error,
+  } = state;
   const [expandedSections, setExpandedSections] = useState({
     fileTypes: true,
     recentFiles: false,
@@ -66,8 +69,8 @@ const ScanPage: React.FC<ScanPageProps> = ({ apiConnected }) => {
   useEffect(() => {
     // Load last selected folder
     const savedFolder = localStorage.getItem("selectedFolder");
-    if (savedFolder) {
-      setSelectedFolder(savedFolder);
+    if (savedFolder && !state.selectedFolder) {
+      updateState({ selectedFolder: savedFolder }); // Changed this line
     }
 
     // Check for in-progress scan
@@ -80,14 +83,14 @@ const ScanPage: React.FC<ScanPageProps> = ({ apiConnected }) => {
   const checkTaskStatus = async (taskId: string) => {
     try {
       const status = await api.getTaskStatus(taskId);
-      setCurrentTask(status);
+      updateState({ currentTask: status });
 
       if (status.status === "running" || status.status === "pending") {
-        setIsScanning(true);
+        updateState({ isScanning: true });
         pollTaskStatus(taskId);
       } else if (status.status === "completed") {
         const results = await api.getScanResults(taskId);
-        setScanResults(results);
+        updateState({ scanResults: results });
         localStorage.removeItem("currentScanTask");
       }
     } catch (error) {
@@ -100,13 +103,13 @@ const ScanPage: React.FC<ScanPageProps> = ({ apiConnected }) => {
     const interval = setInterval(async () => {
       try {
         const status = await api.getTaskStatus(taskId);
-        setCurrentTask(status);
+        updateState({ currentTask: status });
 
         if (status.status === "completed") {
           clearInterval(interval);
-          setIsScanning(false);
+          updateState({ isScanning: false });
           const results = await api.getScanResults(taskId);
-          setScanResults(results);
+          updateState({ scanResults: results });
           localStorage.removeItem("currentScanTask");
 
           // Update stats
@@ -117,14 +120,14 @@ const ScanPage: React.FC<ScanPageProps> = ({ apiConnected }) => {
           localStorage.setItem("organizerStats", JSON.stringify(stats));
         } else if (status.status === "failed") {
           clearInterval(interval);
-          setIsScanning(false);
-          setError(status.error || "Scan failed");
+          updateState({ isScanning: false });
+          updateState({ scanError: status.error || "Scan failed" });
           localStorage.removeItem("currentScanTask");
         }
       } catch (error) {
         clearInterval(interval);
-        setIsScanning(false);
-        setError("Failed to get scan status");
+        updateState({ isScanning: false });
+        updateState({ scanError: "Failed to get scan status" });
         localStorage.removeItem("currentScanTask");
       }
     }, 1000);
@@ -133,39 +136,43 @@ const ScanPage: React.FC<ScanPageProps> = ({ apiConnected }) => {
   const handleSelectFolder = async () => {
     const folder = await (window as any).electron.selectFolder();
     if (folder) {
-      setSelectedFolder(folder);
+      updateState({ selectedFolder: folder }); // Changed this line
       localStorage.setItem("selectedFolder", folder);
-      setError("");
-      setScanResults(null);
+      updateState({ scanError: "" });
+      updateState({ scanResults: null });
     }
   };
 
   const handleStartScan = async () => {
     if (!selectedFolder) return;
 
-    setIsScanning(true);
-    setError("");
-    setScanResults(null);
+    updateState({ isScanning: true });
+    updateState({ scanError: "" });
+    updateState({ scanResults: null });
 
     try {
       const response = await api.startScan(selectedFolder);
       localStorage.setItem("currentScanTask", response.task_id);
-      setCurrentTask({
-        task_id: response.task_id,
-        status: "pending",
-        progress: 0,
-        message: "Starting scan...",
+      updateState({
+        currentTask: {
+          task_id: response.task_id,
+          status: "pending",
+          progress: 0,
+          message: "Starting scan...",
+        },
       });
       pollTaskStatus(response.task_id);
     } catch (error: any) {
-      setIsScanning(false);
-      setError(error.response?.data?.detail || "Failed to start scan");
+      updateState({ isScanning: false });
+      updateState({
+        scanError: error.response?.data?.detail || "Failed to start scan",
+      });
     }
   };
 
   const handleStopScan = () => {
     // In a real implementation, you'd call an API to cancel the task
-    setIsScanning(false);
+    updateState({ isScanning: false });
     localStorage.removeItem("currentScanTask");
   };
 

@@ -14,6 +14,7 @@ import {
   IconButton,
   alpha,
   useTheme,
+  Alert,
 } from "@mui/material";
 import {
   FolderOpen,
@@ -25,6 +26,7 @@ import {
   Warning,
   ArrowForward,
 } from "@mui/icons-material";
+import { useAppState } from "../contexts/AppStateContext";
 
 interface HomePageProps {
   apiConnected: boolean;
@@ -33,6 +35,7 @@ interface HomePageProps {
 const HomePage: React.FC<HomePageProps> = ({ apiConnected }) => {
   const navigate = useNavigate();
   const theme = useTheme();
+  const { state } = useAppState(); // Add this line
   const [stats, setStats] = useState({
     filesOrganized: 0,
     foldersCreated: 0,
@@ -158,6 +161,12 @@ const HomePage: React.FC<HomePageProps> = ({ apiConnected }) => {
             </Button>
           </CardContent>
         </Card>
+        {/* Add this before the existing stats cards */}
+        {state.selectedFolder && (
+          <Alert severity="info" sx={{ mb: 3 }}>
+            Current folder: {state.selectedFolder}
+          </Alert>
+        )}
 
         {/* Stats */}
         <Grid container spacing={3} sx={{ mb: 4 }}>

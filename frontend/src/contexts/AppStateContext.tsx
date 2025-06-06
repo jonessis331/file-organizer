@@ -6,6 +6,16 @@ interface AppState {
   organizationPlan: any | null;
   currentStep: number;
   lastActivity: Date | null;
+  // Add these for ScanPage state persistence
+  isScanning: boolean;
+  currentTask: any | null;
+  scanError: string;
+  // Add these for OrganizePage state persistence
+  activeStep: number;
+  isDryRun: boolean;
+  organizeError: string;
+  // Add API connection state
+  apiConnected: boolean;
 }
 
 interface AppStateContextType {
@@ -20,6 +30,13 @@ const defaultState: AppState = {
   organizationPlan: null,
   currentStep: 0,
   lastActivity: null,
+  isScanning: false,
+  currentTask: null,
+  scanError: "",
+  activeStep: 0,
+  isDryRun: true,
+  organizeError: "",
+  apiConnected: false,
 };
 
 const AppStateContext = createContext<AppStateContextType | undefined>(

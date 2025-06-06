@@ -44,6 +44,7 @@ import {
 } from "@mui/icons-material";
 import { api, TaskStatus } from "../services/api";
 import FolderTreePreview from "../components/FolderTreePreview";
+import { useAppState } from "../contexts/AppStateContext";
 
 interface OrganizePlanMove {
   file: string;
@@ -63,26 +64,19 @@ interface OrganizePageProps {
 
 const OrganizePage: React.FC<OrganizePageProps> = ({ apiConnected }) => {
   const theme = useTheme();
-  const [activeStep, setActiveStep] = useState(0);
-  const [plan, setPlan] = useState<OrganizePlan | null>(null);
-  const [currentTask, setCurrentTask] = useState<TaskStatus | null>(null);
-  const [error, setError] = useState<string>("");
+  const { state, updateState } = useAppState();
+  const {
+    selectedFolder,
+    activeStep,
+    organizationPlan: plan,
+    currentTask,
+    organizeError: error,
+    isDryRun,
+  } = state;
   const [expandedMoves, setExpandedMoves] = useState<Set<number>>(new Set());
   const [confirmDialog, setConfirmDialog] = useState(false);
-  const [isDryRun, setIsDryRun] = useState(true);
-  const [selectedFolder, setSelectedFolder] = useState<string>("");
 
   const steps = ["Generate Plan", "Review Plan", "Execute Organization"];
-
-  useEffect(() => {
-    const savedState = localStorage.getItem("organizePageState");
-    if (savedState) {
-      const state = JSON.parse(savedState);
-      if (state.activeStep !== undefined) setActiveStep(state.activeStep);
-      if (state.plan) setPlan(state.plan);
-      if (state.selectedFolder) setSelectedFolder(state.selectedFolder);
-    }
-  }, []);
 
   // Save state whenever it changes
   useEffect(() => {
@@ -95,29 +89,32 @@ const OrganizePage: React.FC<OrganizePageProps> = ({ apiConnected }) => {
   }, [activeStep, plan, selectedFolder]);
 
   useEffect(() => {
-    // Load saved folder
-    const savedFolder = localStorage.getItem("selectedFolder");
-    if (savedFolder) {
-      setSelectedFolder(savedFolder);
+    // Load saved folder - now from context
+    if (!state.selectedFolder) {
+      const savedFolder = localStorage.getItem("selectedFolder");
+      if (savedFolder) {
+        updateState({ selectedFolder: savedFolder }); // Changed this line
+      }
     }
 
     // Check if we have scan results
     checkScanResults();
   }, []);
-
   const checkScanResults = async () => {
     try {
       const scanResults = localStorage.getItem("scanResults");
       if (!scanResults) {
-        setError("No scan results found. Please scan a folder first.");
+        updateState({
+          organizeError: "No scan results found. Please scan a folder first.",
+        });
         return;
       }
 
       // Check if we have a saved plan
       const savedPlan = localStorage.getItem("organizationPlan");
       if (savedPlan) {
-        setPlan(JSON.parse(savedPlan));
-        setActiveStep(1);
+        updateState({ organizationPlan: JSON.parse(savedPlan) });
+        updateState({ activeStep: 1 });
       }
     } catch (error) {
       console.error("Error checking scan results:", error);
@@ -126,23 +123,28 @@ const OrganizePage: React.FC<OrganizePageProps> = ({ apiConnected }) => {
 
   const handleGeneratePlan = async () => {
     if (!selectedFolder) {
-      setError("Please select a folder first");
+      updateState({ organizeError: "Please select a folder first" });
       return;
     }
 
-    setError("");
+    updateState({ organizeError: "" });
     try {
       const response = await api.generatePrompt(selectedFolder);
-      setCurrentTask({
-        task_id: response.task_id,
-        status: "pending",
-        progress: 0,
-        message: "Generating organization plan...",
+      updateState({
+        currentTask: {
+          task_id: response.task_id,
+          status: "pending",
+          progress: 0,
+          message: "Generating organization plan...",
+        },
       });
 
       pollTaskStatus(response.task_id, "prompt");
     } catch (error: any) {
-      setError(error.response?.data?.detail || "Failed to generate plan");
+      updateState({
+        organizeError:
+          error.response?.data?.detail || "Failed to generate plan",
+      });
     }
   };
 
@@ -153,7 +155,7 @@ const OrganizePage: React.FC<OrganizePageProps> = ({ apiConnected }) => {
     const interval = setInterval(async () => {
       try {
         const status = await api.getTaskStatus(taskId);
-        setCurrentTask(status);
+        updateState({ currentTask: status });
 
         if (status.status === "completed") {
           clearInterval(interval);
@@ -164,16 +166,17 @@ const OrganizePage: React.FC<OrganizePageProps> = ({ apiConnected }) => {
               // In a real implementation, you'd get this from the API
               // For now, we'll show a message to copy the plan
               loadPlanFromFile();
-              setActiveStep(1);
+              updateState({ activeStep: 1 });
+
               //   Alert(
               //     "Please copy the generated prompt from data/gpt_prompt.txt to ChatGPT/Claude and save the response to data/plan.json"
               //   );
             } catch (error) {
-              setError("Failed to load generated plan");
+              updateState({ organizeError: "Failed to load generated plan" });
             }
           } else {
             // Organization complete
-            setActiveStep(2);
+            updateState({ activeStep: 2 });
 
             // Update stats
             const stats = JSON.parse(
@@ -187,11 +190,11 @@ const OrganizePage: React.FC<OrganizePageProps> = ({ apiConnected }) => {
           }
         } else if (status.status === "failed") {
           clearInterval(interval);
-          setError(status.error || `${type} failed`);
+          updateState({ organizeError: status.error || `${type} failed` });
         }
       } catch (error) {
         clearInterval(interval);
-        setError(`Failed to get ${type} status`);
+        updateState({ organizeError: `Failed to get ${type} status` });
       }
     }, 1000);
   };
@@ -199,13 +202,14 @@ const OrganizePage: React.FC<OrganizePageProps> = ({ apiConnected }) => {
   const loadPlanFromFile = async () => {
     try {
       const planData = await api.loadPlan();
-      setPlan(planData);
+      updateState({ organizationPlan: planData });
       localStorage.setItem("organizationPlan", JSON.stringify(planData));
-      setActiveStep(1);
+      updateState({ activeStep: 1 });
     } catch (error) {
-      setError(
-        "Failed to load plan. Please ensure plan.json exists in the backend/data folder."
-      );
+      updateState({
+        organizeError:
+          "Failed to load plan. Please ensure plan.json exists in the backend/data folder.",
+      });
     }
   };
 
@@ -213,20 +217,24 @@ const OrganizePage: React.FC<OrganizePageProps> = ({ apiConnected }) => {
     if (!plan || !selectedFolder) return;
 
     setConfirmDialog(false);
-    setError("");
+    updateState({ organizeError: "" });
 
     try {
       const response = await api.executeOrganization(selectedFolder, isDryRun);
-      setCurrentTask({
-        task_id: response.task_id,
-        status: "pending",
-        progress: 0,
-        message: isDryRun ? "Running simulation..." : "Organizing files...",
+      updateState({
+        currentTask: {
+          task_id: response.task_id,
+          status: "pending",
+          progress: 0,
+          message: isDryRun ? "Running simulation..." : "Organizing files...",
+        },
       });
 
       pollTaskStatus(response.task_id, "organize");
     } catch (error: any) {
-      setError(error.response?.data?.detail || "Failed to execute plan");
+      updateState({
+        organizeError: error.response?.data?.detail || "Failed to execute plan",
+      });
     }
   };
 
@@ -285,7 +293,13 @@ const OrganizePage: React.FC<OrganizePageProps> = ({ apiConnected }) => {
 
       {/* Error Display */}
       {error && (
-        <Alert severity="error" sx={{ mb: 3 }} onClose={() => setError("")}>
+        <Alert
+          severity="error"
+          sx={{ mb: 3 }}
+          onClose={() => {
+            updateState({ organizeError: "" });
+          }}
+        >
           {error}
         </Alert>
       )}
@@ -439,7 +453,7 @@ const OrganizePage: React.FC<OrganizePageProps> = ({ apiConnected }) => {
               size="large"
               startIcon={<Preview />}
               onClick={() => {
-                setIsDryRun(true);
+                updateState({ isDryRun: true });
                 setConfirmDialog(true);
               }}
             >
@@ -451,7 +465,7 @@ const OrganizePage: React.FC<OrganizePageProps> = ({ apiConnected }) => {
               color="success"
               startIcon={<PlayArrow />}
               onClick={() => {
-                setIsDryRun(false);
+                updateState({ isDryRun: false });
                 setConfirmDialog(true);
               }}
             >
@@ -485,10 +499,13 @@ const OrganizePage: React.FC<OrganizePageProps> = ({ apiConnected }) => {
               size="large"
               startIcon={<RestartAlt />}
               onClick={() => {
-                setActiveStep(0);
-                setPlan(null);
-                setCurrentTask(null);
-                setError("");
+                updateState({ activeStep: 0 });
+
+                updateState({ organizationPlan: null });
+
+                updateState({ currentTask: null });
+
+                updateState({ organizeError: "" });
               }}
             >
               Organize Another Folder
@@ -566,13 +583,18 @@ const OrganizePage: React.FC<OrganizePageProps> = ({ apiConnected }) => {
               color="success"
               startIcon={<PlayArrow />}
               onClick={() => {
-                setIsDryRun(false);
+                updateState({ isDryRun: false });
                 setConfirmDialog(true);
               }}
             >
               Execute for Real
             </Button>
-            <Button variant="outlined" onClick={() => setActiveStep(1)}>
+            <Button
+              variant="outlined"
+              onClick={() => {
+                updateState({ activeStep: 1 });
+              }}
+            >
               Back to Plan
             </Button>
           </Box>
